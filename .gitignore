@@ -48,4 +48,4 @@ dist-ssr
 
 # Coverage
 coverage/
-*.lcov
+*.lcovcl
