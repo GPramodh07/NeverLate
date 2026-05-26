@@ -10,7 +10,7 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
     { id: "events", label: "Agenda / Events", icon: "calendar_today" },
     { id: "reminders", label: "Reminders", icon: "notifications_active" },
     { id: "actions", label: "Actions", icon: "bolt" },
-    { id: "chat", label: "AI Chat", icon: "chat_bubble" },
+    { id: "chat", label: "AI Chat", icon: "forum" },
     { id: "insights", label: "Insights", icon: "insights" },
     { id: "sources", label: "Sources", icon: "database" },
     { id: "settings", label: "Settings", icon: "settings" },
