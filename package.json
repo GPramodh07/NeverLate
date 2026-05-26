@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "workspaces": [
-          "apps/*",
+    "apps/*",
     "packages/*"
   ],
   "description": "NeverLate is an AI assistant that connects scattered personal information sources (email, calendar, notes, documents, tasks, etc.), understands them through a unified data layer using Coral, and proactively surfaces important things users are likely to miss before they become problems.",
@@ -23,6 +23,10 @@
     "dev:web": "npm run dev -w @neverlate/web",
     "dev:server": "npm run dev -w @neverlate/server",
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:server\"",
-    "build": "npm run build --workspaces"
+    "build": "npm run build --workspaces",
+    "format": "prettier . --write"
+  },
+  "devDependencies": {
+    "prettier": "3.8.3"
   }
 }
