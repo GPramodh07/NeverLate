@@ -23,11 +23,13 @@
     "dev:web": "npm run dev -w @neverlate/web",
     "dev:server": "npm run dev -w @neverlate/server",
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:server\"",
+    "start": "tsx watch src/index.ts",
     "build": "npm run build --workspaces",
     "format": "prettier . --write"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
-    "prettier": "3.8.3"
+    "prettier": "3.8.3",
+    "tsx": "^4.22.3"
   }
 }

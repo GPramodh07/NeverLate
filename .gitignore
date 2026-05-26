@@ -35,6 +35,8 @@ dist-ssr
 # Build caches
 .eslintcache
 .turbo
+.cache/
+.parcel-cache/
 
 # TypeScript build output
 *.tsbuildinfo
