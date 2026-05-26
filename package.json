@@ -27,6 +27,7 @@
     "format": "prettier . --write"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "prettier": "3.8.3"
   }
 }
