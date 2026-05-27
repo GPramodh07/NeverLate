@@ -1,12 +1,12 @@
 import * as dotenv from "dotenv";
-import path from "path";
-dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
-import express from "express";
+import express, { type Request, type Response } from "express";
 import cors from "cors";
 import { google } from "googleapis";
 import fs from "fs";
-import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine";
+import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine.js";
+import path from "path";
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,7 +26,7 @@ const oauth2Client = new google.auth.OAuth2(
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
   "https://www.googleapis.com/auth/calendar.readonly",
-  "https://www.googleapis.com/auth/userinfo.email"
+  "https://www.googleapis.com/auth/userinfo.email",
 ];
 
 const tokensPath = path.resolve("tokens.json");
@@ -40,7 +40,7 @@ const loadTokens = () => {
   return false;
 };
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Hello from @neverlate/server!");
 });
 
@@ -104,12 +104,12 @@ async function fetchEmailsData() {
         format: "metadata",
         metadataHeaders: ["Subject", "From", "Date"],
       });
-      
+
       const headers = message.data.payload?.headers || [];
       const subject = headers.find((h) => h.name === "Subject")?.value || "No Subject";
       const sender = headers.find((h) => h.name === "From")?.value || "Unknown Sender";
       const date = headers.find((h) => h.name === "Date")?.value || "";
-      
+
       return {
         id: msg.id as string,
         subject,
