@@ -1,4 +1,5 @@
 
+import PlatformIcon from './PlatformIcon'
 
 interface SidebarProps {
   activePage: string
@@ -80,25 +81,20 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
               4 / 6
             </span>
           </div>
-          <div className="flex space-x-1.5">
-            {['Gmail', 'Calendar', 'Slack', 'Drive'].map((app, idx) => (
-              <div 
+          <div className="flex space-x-1.5 items-center">
+            {['gmail', 'calendar', 'slack', 'drive'].map((appId, idx) => (
+              <PlatformIcon 
                 key={idx} 
-                className={`w-6 h-6 rounded-full flex items-center justify-center border shadow-sm ${
-                  isDark ? 'bg-zinc-800 border-white/5' : 'bg-white border-slate-100'
-                }`}
-                title={app}
-              >
-                <div className={`w-3.5 h-3.5 rounded-full ${
-                  app === 'Gmail' ? 'bg-red-500' :
-                  app === 'Calendar' ? 'bg-blue-500' :
-                  app === 'Slack' ? 'bg-purple-500' : 'bg-yellow-500'
-                }`} />
-              </div>
+                id={appId} 
+                connected={true} 
+                isDark={isDark} 
+                size="sidebar" 
+                className={isDark ? "opacity-90 hover:opacity-100" : "opacity-80 hover:opacity-100"}
+              />
             ))}
             <button 
               onClick={() => setActivePage('sources')}
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold hover:scale-105 transition-all ${
+              className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-semibold hover:scale-105 transition-all ${
                 isDark ? 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
               }`}
             >

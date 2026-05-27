@@ -31,5 +31,10 @@
     "concurrently": "^9.2.1",
     "prettier": "3.8.3",
     "tsx": "^4.22.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "googleapis": "^172.0.0"
   }
 }

@@ -1,5 +1,7 @@
 
 
+import { useState, useEffect } from 'react'
+
 interface HeaderProps {
   activePage: string
   setActivePage: (page: string) => void
@@ -8,6 +10,22 @@ interface HeaderProps {
 }
 
 export default function Header({ activePage, setActivePage, isDark, setIsDark }: HeaderProps) {
+  const [notifCount, setNotifCount] = useState(0)
+
+  useEffect(() => {
+    async function fetchNotifs() {
+      try {
+        const res = await fetch('http://localhost:3000/api/ai/notifications')
+        if (res.ok) {
+          const data = await res.json()
+          setNotifCount(data.length || 0)
+        }
+      } catch (e) {
+        setNotifCount(0)
+      }
+    }
+    fetchNotifs()
+  }, [])
   const searchPlaceholders: Record<string, string> = {
     'dashboard': 'Ask AI to find anything...',
     'events': 'Search events and schedule...',
@@ -75,10 +93,15 @@ export default function Header({ activePage, setActivePage, isDark, setIsDark }:
         </button>
 
         {/* Notifications and History buttons */}
-        <button className={`p-2 rounded-full transition-all ${
+        <button className={`relative p-2 rounded-full transition-all ${
           isDark ? 'text-zinc-400 hover:bg-white/5' : 'text-slate-500 hover:bg-slate-100'
         }`}>
           <span className="material-symbols-outlined text-[20px]">notifications</span>
+          {notifCount > 0 && (
+            <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white dark:border-[#0a0a0c]">
+              {notifCount}
+            </span>
+          )}
         </button>
 
         <button className={`p-2 rounded-full transition-all ${

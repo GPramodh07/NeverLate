@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { toneLabels } from '../data/mockData'
+import PlatformIcon from '../components/PlatformIcon'
 
 interface SettingsProps {
   isDark: boolean
@@ -221,11 +222,7 @@ export default function Settings({ isDark }: SettingsProps) {
             {/* Calendar Sync sync preference */}
             <div className="p-4 flex items-center justify-between hover:bg-slate-50/20 transition-colors">
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                  isDark ? 'bg-zinc-850 text-violet-400' : 'bg-purple-50 text-purple-600'
-                }`}>
-                  <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-                </div>
+                <PlatformIcon id="calendar" connected={true} isDark={isDark} size="standard" />
                 <div>
                   <h4 className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-800'}`}>Calendar Reminders</h4>
                   <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Sync intelligent reminders directly to your Google Calendar.</p>

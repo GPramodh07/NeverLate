@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { initialSourcesList } from '../data/mockData'
+import PlatformIcon from '../components/PlatformIcon'
 import type { SourceStream } from '../data/mockData'
 
 interface SourcesProps {
@@ -10,14 +11,66 @@ export default function Sources({ isDark }: SourcesProps) {
   const [sources, setSources] = useState<SourceStream[]>(initialSourcesList)
   const [loadingId, setLoadingId] = useState<string | null>(null)
 
-  const handleToggle = (id: string) => {
-    setLoadingId(id)
-    setTimeout(() => {
-      setSources(prev => 
-        prev.map(src => src.id === id ? { ...src, connected: !src.connected, lastSync: 'Just now' } : src)
-      )
-      setLoadingId(null)
-    }, 1200)
+  useEffect(() => {
+    fetch('http://localhost:3000/api/google/status')
+      .then(res => res.json())
+      .then(data => {
+        if (data.connected) {
+          setSources(prev => prev.map(src => 
+            (src.id === 'gmail' || src.id === 'calendar') 
+              ? { ...src, connected: true, email: data.email, lastSync: 'Just now' }
+              : src
+          ))
+        } else {
+          setSources(prev => prev.map(src => 
+            (src.id === 'gmail' || src.id === 'calendar') 
+              ? { ...src, connected: false }
+              : src
+          ))
+        }
+      })
+      .catch(err => console.error("Error fetching google status", err))
+  }, [])
+
+  const handleToggle = async (id: string) => {
+    if (id === 'gmail' || id === 'calendar') {
+      const source = sources.find(s => s.id === id)
+      if (source?.connected) {
+        setLoadingId(id)
+        try {
+          await fetch('http://localhost:3000/api/google/disconnect', { method: 'POST' })
+          setSources(prev => prev.map(src => 
+            (src.id === 'gmail' || src.id === 'calendar') 
+              ? { ...src, connected: false }
+              : src
+          ))
+        } catch (e) {
+          console.error(e)
+        } finally {
+          setLoadingId(null)
+        }
+      } else {
+        setLoadingId(id)
+        try {
+          const res = await fetch('http://localhost:3000/api/auth/google/url')
+          const data = await res.json()
+          if (data.url) {
+            window.location.href = data.url
+          }
+        } catch (e) {
+          console.error(e)
+          setLoadingId(null)
+        }
+      }
+    } else {
+      setLoadingId(id)
+      setTimeout(() => {
+        setSources(prev => 
+          prev.map(src => src.id === id ? { ...src, connected: !src.connected, lastSync: 'Just now' } : src)
+        )
+        setLoadingId(null)
+      }, 1200)
+    }
   }
 
   return (
@@ -41,9 +94,7 @@ export default function Sources({ isDark }: SourcesProps) {
               : 'bg-white border-slate-100 hover:border-purple-600/10'
           }`}>
             <div className="flex justify-between items-start mb-6">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isDark ? src.darkColor : src.lightColor}`}>
-                <span className="material-symbols-outlined text-[28px]">{src.icon}</span>
-              </div>
+              <PlatformIcon id={src.id} connected={src.connected} isDark={isDark} size="large" />
 
               {/* Connected Badge Toggle */}
               {src.connected ? (
