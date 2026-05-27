@@ -16,6 +16,7 @@ interface WeekEventItem {
   conflictMsg?: string
   isFlight?: boolean
 }
+import PlatformIcon from '../components/PlatformIcon'
 
 export default function Events({ isDark }: EventsProps) {
   const [selectedDay, setSelectedDay] = useState<'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun'>('Wed')
@@ -87,12 +88,15 @@ export default function Events({ isDark }: EventsProps) {
             Predictive travel buffers and automatic meeting coordination is live.
           </p>
         </div>
-        <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl ${
+        <div className={`border shadow-sm flex items-center gap-3 px-4 py-2 rounded-2xl ${
           isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
         }`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse"></span>
+          <div className="flex -space-x-1">
+            <PlatformIcon id="calendar" connected={true} isDark={isDark} size="compact" className={`ring-2 ${isDark ? 'ring-[#18181b]' : 'ring-white'}`} showPulse={false} />
+            <PlatformIcon id="gmail" connected={true} isDark={isDark} size="compact" className={`ring-2 ${isDark ? 'ring-[#18181b]' : 'ring-white'}`} showPulse={false} />
+          </div>
           <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>
-            Connected to Google Calendar & Gmail
+            Connected Services Active
           </span>
         </div>
       </header>

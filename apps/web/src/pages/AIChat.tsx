@@ -20,29 +20,46 @@ export default function AIChat({ isDark }: AIChatProps) {
   const [isTyping, setIsTyping] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputVal.trim()) return
+    const currentInput = inputVal;
     const newMsg: Message = {
       sender: 'user',
       time: 'Just Now',
-      text: inputVal
+      text: currentInput
     }
     setMessages((prev) => [...prev, newMsg])
     setInputVal('')
 
-    // Mock AI response
     setIsTyping(true)
-    setTimeout(() => {
-      setIsTyping(false)
+    try {
+      const res = await fetch('http://localhost:3000/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: currentInput })
+      });
+      const data = await res.json();
+      
       setMessages((prev) => [
         ...prev,
         {
           sender: 'ai',
           time: 'Just Now',
-          text: "I've scanned your connected data sources. I see no immediate issues regarding that request. Is there anything else you'd like me to sync or draft?"
+          text: data.reply || "I didn't quite catch that."
         }
-      ])
-    }, 1500)
+      ]);
+    } catch (e) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          time: 'Just Now',
+          text: "I'm offline right now. Try connecting your Google account."
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
   }
 
   useEffect(() => {
