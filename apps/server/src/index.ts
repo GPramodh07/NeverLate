@@ -2,8 +2,8 @@ import * as dotenv from "dotenv";
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import path from "path";
-import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine.js";
-import { getRecentEmails, getUpcomingEvents } from "./services/coralService.js";
+import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine.ts";
+import { getRecentEmails, getUpcomingEvents } from "./services/coralService.ts";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
@@ -41,10 +41,7 @@ app.get("/api/google/calendar", async (req, res) => {
 // AI Endpoints powered by Coral Data
 app.get("/api/ai/dashboard", async (req, res) => {
   try {
-    const [emails, events] = await Promise.all([
-      getRecentEmails(),
-      getUpcomingEvents(),
-    ]);
+    const [emails, events] = await Promise.all([getRecentEmails(), getUpcomingEvents()]);
     const data = await processDashboardData(emails, events);
     res.json(data);
   } catch (error) {
@@ -56,10 +53,7 @@ app.get("/api/ai/dashboard", async (req, res) => {
 app.post("/api/ai/chat", async (req, res) => {
   try {
     const { query } = req.body;
-    const [emails, events] = await Promise.all([
-      getRecentEmails(),
-      getUpcomingEvents(),
-    ]);
+    const [emails, events] = await Promise.all([getRecentEmails(), getUpcomingEvents()]);
     const reply = await processChat(query, emails, events);
     res.json({ reply });
   } catch (error) {
@@ -70,10 +64,7 @@ app.post("/api/ai/chat", async (req, res) => {
 
 app.get("/api/ai/notifications", async (req, res) => {
   try {
-    const [emails, events] = await Promise.all([
-      getRecentEmails(),
-      getUpcomingEvents(),
-    ]);
+    const [emails, events] = await Promise.all([getRecentEmails(), getUpcomingEvents()]);
     const notifications = getActiveNotifications(emails, events);
     res.json(notifications);
   } catch (error) {

@@ -6,7 +6,7 @@ import {
   chatHeuristic,
   type Email,
   type CalendarEvent
-} from "./heuristicEngine.js";
+} from "./heuristicEngine.ts";
 
 // Flag to switch to LLM engine in the future when API keys are available
 const USE_LLM = false;

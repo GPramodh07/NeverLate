@@ -1,6 +1,6 @@
-import { runCoralCommand } from "../utils/runCoralCommand.js";
-import { coralCache } from "../utils/cache.js";
-import type { Email, CalendarEvent } from "../ai/heuristicEngine.js";
+import { runCoralCommand } from "../utils/runCoralCommand.ts";
+import { coralCache } from "../utils/cache.ts";
+import type { Email, CalendarEvent } from "../ai/heuristicEngine.ts";
 
 // Realistic fallback demo data if Coral execution fails
 const FALLBACK_EMAILS: Email[] = [
@@ -124,10 +124,7 @@ export async function getUpcomingEvents(): Promise<CalendarEvent[]> {
 }
 
 export async function getDashboardContext() {
-  const [emails, events] = await Promise.all([
-    getRecentEmails(),
-    getUpcomingEvents(),
-  ]);
+  const [emails, events] = await Promise.all([getRecentEmails(), getUpcomingEvents()]);
 
   return {
     emails,
