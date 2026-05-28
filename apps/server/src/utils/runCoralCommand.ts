@@ -16,8 +16,20 @@ export async function runCoralCommand<T>(query: string): Promise<T> {
   try {
     const { stdout, stderr } = await execAsync(command);
 
-    if (stderr && stderr.trim().length > 0) {
+    let parsedData = null;
+    if (stdout && stdout.trim() !== "") {
+      try {
+        parsedData = JSON.parse(stdout.trim());
+      } catch (e) {
+        // ignore JSON parse error here, we will throw below if stderr has error
+      }
+    }
+
+    if (!parsedData && stderr && stderr.trim().length > 0) {
       console.warn("Coral CLI Warning/Error Output:", stderr);
+      if (stderr.toLowerCase().includes("panicked") || stderr.toLowerCase().includes("error")) {
+        throw new Error(`Coral CLI Error/Panic: ${stderr.trim()}`);
+      }
     }
 
     if (!stdout || stdout.trim() === "") {

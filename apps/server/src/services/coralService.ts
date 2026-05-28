@@ -74,18 +74,39 @@ export async function getRecentEmails(): Promise<Email[]> {
   try {
     const rawData = await runCoralCommand<any[]>("SELECT * FROM gmail.emails LIMIT 5");
 
-    console.log("=== Raw Coral Email Data ===");
-    console.log(rawData);
+    // console.log("=== Raw Coral Email Data ===");
+    // console.log(rawData);
 
     // Normalize Coral output to match our strict Email interface
-    const emails: Email[] = rawData.map((row) => ({
-      id: row.id || `coral-email-${Math.random()}`,
-      subject: row.subject || "No Subject",
-      sender: row.sender || row.from || "Unknown",
-      snippet: row.snippet || "",
-      date: row.timestamp || row.date || new Date().toISOString(),
-      labels: row.labels || [],
-      priority: row.priority || "Normal",
+    const emails: Email[] = await Promise.all(rawData.map(async (row) => {
+      let snippet = row.snippet;
+      console.log("=== Raw Coral Email Data ===");
+      
+      // If snippet is missing or null, fetch it from the message table
+      if (!snippet && row.id) {
+        try {
+          const detail = await runCoralCommand<any[]>(`SELECT snippet, subject, sender FROM gmail.message WHERE id = '${row.id}'`);
+          console.log(detail);
+          if (detail && detail.length > 0) {
+            
+            if (detail[0].snippet) snippet = detail[0].snippet;
+            if (!row.subject && detail[0].subject) row.subject = detail[0].subject;
+            if (!row.sender && detail[0].sender) row.sender = detail[0].sender;
+          }
+        } catch (err) {
+          console.log(`Could not fetch detail for ${row.id}`);
+        }
+      }
+
+      return {
+        id: row.id || `coral-email-${Math.random()}`,
+        subject: row.subject || "No Subject",
+        sender: row.sender || row.from || "Unknown",
+        snippet: snippet || "",
+        date: row.timestamp || row.date || new Date().toISOString(),
+        labels: row.labels || [],
+        priority: row.priority || "Normal",
+      };
     }));
 
     coralCache.set(cacheKey, emails);
