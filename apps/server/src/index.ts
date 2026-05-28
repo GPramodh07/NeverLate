@@ -21,6 +21,8 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/api/google/emails", async (req, res) => {
   try {
     const data = await getRecentEmails();
+    console.log("=== Fetched Emails ===");
+    console.log(data);
     res.json(data);
   } catch (error) {
     console.error("Error fetching emails via Coral", error);

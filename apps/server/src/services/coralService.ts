@@ -72,9 +72,10 @@ export async function getRecentEmails(): Promise<Email[]> {
   if (cached) return cached;
 
   try {
-    const rawData = await runCoralCommand<any[]>(
-      "SELECT * FROM gmail.emails ORDER BY timestamp DESC LIMIT 15"
-    );
+    const rawData = await runCoralCommand<any[]>("SELECT * FROM gmail.emails LIMIT 5");
+
+    console.log("=== Raw Coral Email Data ===");
+    console.log(rawData);
 
     // Normalize Coral output to match our strict Email interface
     const emails: Email[] = rawData.map((row) => ({

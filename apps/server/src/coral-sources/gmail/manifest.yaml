@@ -29,7 +29,8 @@ tables:
     # API details are now grouped in the 'request' block
     request:
       # Embed the maxResults and pushdown query directly in the URL
-      path: "/gmail/v1/users/me/messages?maxResults=100"
+      # format=full returns complete message including snippet, headers, payload
+      path: "/gmail/v1/users/me/messages?maxResults=100&format=full"
       method: GET
 
     # Parsing instructions are grouped in the 'response' block
