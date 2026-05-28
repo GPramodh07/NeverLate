@@ -26,14 +26,23 @@ tables:
   - name: emails
     description: "Fetches user emails from Gmail"
 
-    # API details are now grouped in the 'request' block
+    filters:
+      - name: id
+        type: Utf8
+        mode: equality
+
+    detail_hints:
+      - table: message
+        search_result_column: id
+        detail_filter: id
+        purpose: "Fetch full message including snippet"
+
     request:
       # Embed the maxResults and pushdown query directly in the URL
       # format=full returns complete message including snippet, headers, payload
       path: "/gmail/v1/users/me/messages?maxResults=100&format=full"
       method: GET
 
-    # Parsing instructions are grouped in the 'response' block
     response:
       rows_path:
         - messages
@@ -46,8 +55,25 @@ tables:
       - name: threadId
         type: Utf8
         description: "The ID of the thread the message belongs to."
-      # Depending on Coral's schema configuration for detailed API calls,
-      # map the message details (snippet, payload.headers) here.
       - name: snippet
         type: Utf8
         description: "A short part of the message text."
+
+  - name: message
+    description: "Fetches a single message from Gmail"
+    filters:
+      - name: id
+        type: Utf8
+        mode: equality
+    request:
+      path: "/gmail/v1/users/me/messages/{{filter.id}}?format=full"
+      method: GET
+    columns:
+      - name: id
+        type: Utf8
+      - name: snippet
+        type: Utf8
+      - name: subject
+        type: Utf8
+      - name: sender
+        type: Utf8

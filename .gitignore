@@ -53,3 +53,7 @@ coverage/
 *.lcovcl
 .env
 tokens.json
+
+# Local error file
+error.txt
+
