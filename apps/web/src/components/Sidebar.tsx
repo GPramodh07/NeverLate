@@ -9,7 +9,7 @@ interface SidebarProps {
 export default function Sidebar({ activePage, setActivePage, isDark }: SidebarProps) {
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-    { id: "dashboard2", label: "Dashboard 2", icon: "dashboard" },
+    // { id: "dashboard2", label: "Dashboard 2", icon: "dashboard" },
     { id: "events", label: "Agenda / Events", icon: "calendar_today" },
     { id: "reminders", label: "Reminders", icon: "notifications_active" },
     { id: "actions", label: "Actions", icon: "bolt" },
@@ -21,11 +21,10 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
 
   return (
     <aside
-      className={`h-screen w-64 fixed left-0 top-0 border-r flex flex-col p-6 overflow-y-auto z-50 transition-all duration-300 ${
-        isDark
+      className={`h-screen w-64 fixed left-0 top-0 border-r flex flex-col p-6 overflow-y-auto z-50 transition-all duration-300 ${isDark
           ? "bg-[#0a0a0c] border-zinc-850 text-zinc-300 shadow-xl shadow-primary/5"
           : "bg-white/80 border-slate-200 backdrop-blur-xl text-slate-800 shadow-xl shadow-primary/5"
-      }`}
+        }`}
     >
       {/* Brand Logo */}
       <div className="mb-8">
@@ -43,15 +42,14 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
             <button
               key={item.id}
               onClick={() => setActivePage(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-left transition-all duration-200 active:scale-[0.98] ${
-                isActive
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-left transition-all duration-200 active:scale-[0.98] ${isActive
                   ? isDark
                     ? "bg-violet-600/20 text-violet-300"
                     : "bg-purple-100 text-purple-700"
                   : isDark
                     ? "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
                     : "text-slate-600 hover:text-slate-800 hover:bg-slate-50"
-              }`}
+                }`}
             >
               <span
                 className={`material-symbols-outlined text-[20px] transition-transform ${isActive ? "scale-105" : ""}`}
@@ -69,9 +67,8 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
       <div className="mt-auto space-y-4 pt-6">
         {/* Connected Sources Status Widget */}
         <div
-          className={`p-4 rounded-xl border transition-all ${
-            isDark ? "bg-[#18181b] border-zinc-800" : "bg-slate-50 border-slate-100"
-          }`}
+          className={`p-4 rounded-xl border transition-all ${isDark ? "bg-[#18181b] border-zinc-800" : "bg-slate-50 border-slate-100"
+            }`}
         >
           <div className="flex justify-between items-center mb-3">
             <span
@@ -96,11 +93,10 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
             ))}
             <button
               onClick={() => setActivePage("sources")}
-              className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-semibold hover:scale-105 transition-all ${
-                isDark
+              className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-semibold hover:scale-105 transition-all ${isDark
                   ? "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
                   : "bg-slate-200 text-slate-600 hover:bg-slate-300"
-              }`}
+                }`}
             >
               +
             </button>
@@ -109,11 +105,10 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
 
         {/* Upgrade Card / Premium Banner */}
         <div
-          className={`p-4 rounded-xl border ${
-            isDark
+          className={`p-4 rounded-xl border ${isDark
               ? "bg-violet-600/10 border-violet-500/20"
               : "bg-purple-600/5 border-purple-600/10"
-          }`}
+            }`}
         >
           <p
             className={`font-semibold text-[10px] uppercase tracking-wider ${isDark ? "text-violet-400" : "text-purple-700"}`}
@@ -127,11 +122,10 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
           </p>
           <button
             onClick={() => setActivePage("settings")}
-            className={`w-full py-2 text-xs font-bold rounded-lg transition-all active:scale-[0.98] ${
-              isDark
+            className={`w-full py-2 text-xs font-bold rounded-lg transition-all active:scale-[0.98] ${isDark
                 ? "bg-violet-600 text-white hover:bg-violet-700 shadow-md shadow-violet-600/20"
                 : "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-600/20"
-            }`}
+              }`}
           >
             Upgrade to Pro
           </button>
@@ -143,18 +137,16 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
         >
           <a
             href="#"
-            className={`flex items-center gap-3 px-4 py-1.5 text-xs font-medium transition-colors ${
-              isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-800"
-            }`}
+            className={`flex items-center gap-3 px-4 py-1.5 text-xs font-medium transition-colors ${isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-800"
+              }`}
           >
             <span className="material-symbols-outlined text-[16px]">help</span>
             <span>Help</span>
           </a>
           <a
             href="#"
-            className={`flex items-center gap-3 px-4 py-1.5 text-xs font-medium transition-colors ${
-              isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-800"
-            }`}
+            className={`flex items-center gap-3 px-4 py-1.5 text-xs font-medium transition-colors ${isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-800"
+              }`}
           >
             <span className="material-symbols-outlined text-[16px]">shield</span>
             <span>Privacy</span>
