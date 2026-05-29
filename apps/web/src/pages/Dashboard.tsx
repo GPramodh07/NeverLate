@@ -1,9 +1,9 @@
 import {
   dashboardKpis,
   dashboardInsights,
-  dashboardSources,
   dashboardAgenda,
 } from "../data/mockData";
+import { useSources } from "../context/SourcesContext";
 
 interface DashboardProps {
   setActivePage: (page: string) => void;
@@ -11,6 +11,9 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
+  const { sources } = useSources();
+  const connectedSources = sources.filter(s => s.connected);
+
   return (
     <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto grid grid-cols-12 gap-6 animate-in fade-in duration-500">
       {/* Welcome Header */}
@@ -216,7 +219,7 @@ export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {dashboardSources.map((src, idx) => (
+            {connectedSources.slice(0, 3).map((src, idx) => (
               <div
                 key={idx}
                 className={`p-4 rounded-2xl border shadow-sm flex flex-col items-start hover:-translate-y-0.5 transition-transform duration-200 ${

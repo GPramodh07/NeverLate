@@ -10,6 +10,7 @@ import Settings from "./pages/Settings";
 import Events from "./pages/Events.tsx";
 import Reminders from "./pages/Reminders.tsx";
 import Actions from "./pages/Actions.tsx";
+import { SourcesProvider } from "./context/SourcesContext";
 
 export default function App() {
   const [activePage, setActivePage] = useState("dashboard");
@@ -41,22 +42,24 @@ export default function App() {
   };
 
   return (
-    <div
-      className={`h-screen flex overflow-hidden font-sans transition-colors duration-300 ${
-        isDark ? "bg-[#0a0a0c] text-zinc-300" : "bg-[#f8f9ff] text-slate-800"
-      }`}
-    >
-      <Sidebar activePage={activePage} setActivePage={setActivePage} isDark={isDark} />
-      <div className="flex-1 flex flex-col min-w-0 pl-64">
-        <Header
-          activePage={activePage}
-          setActivePage={setActivePage}
-          isDark={isDark}
-          setIsDark={setIsDark}
-        />
-        <main className="flex-1 overflow-y-auto">{renderPage()}</main>
+    <SourcesProvider>
+      <div
+        className={`h-screen flex overflow-hidden font-sans transition-colors duration-300 ${
+          isDark ? "bg-[#0a0a0c] text-zinc-300" : "bg-[#f8f9ff] text-slate-800"
+        }`}
+      >
+        <Sidebar activePage={activePage} setActivePage={setActivePage} isDark={isDark} />
+        <div className="flex-1 flex flex-col min-w-0 pl-64">
+          <Header
+            activePage={activePage}
+            setActivePage={setActivePage}
+            isDark={isDark}
+            setIsDark={setIsDark}
+          />
+          <main className="flex-1 overflow-y-auto">{renderPage()}</main>
+        </div>
       </div>
-    </div>
+    </SourcesProvider>
   );
 }
 export { App };

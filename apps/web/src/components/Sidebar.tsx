@@ -1,4 +1,5 @@
 import PlatformIcon from "./PlatformIcon";
+import { useSources } from "../context/SourcesContext";
 
 interface SidebarProps {
   activePage: string;
@@ -7,6 +8,9 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activePage, setActivePage, isDark }: SidebarProps) {
+  const { sources } = useSources();
+  const connectedSources = sources.filter(s => s.connected);
+  
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: "dashboard" },
     // { id: "dashboard2", label: "Dashboard 2", icon: "dashboard" },
@@ -77,14 +81,14 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
               Connected Sources
             </span>
             <span className={`text-xs font-bold ${isDark ? "text-violet-400" : "text-purple-600"}`}>
-              4 / 6
+              {connectedSources.length} / {sources.length}
             </span>
           </div>
-          <div className="flex space-x-1.5 items-center">
-            {["gmail", "calendar", "slack", "drive"].map((appId, idx) => (
+          <div className="flex space-x-1.5 items-center flex-wrap gap-y-2">
+            {connectedSources.map((src, idx) => (
               <PlatformIcon
                 key={idx}
-                id={appId}
+                id={src.id}
                 connected={true}
                 isDark={isDark}
                 size="sidebar"
