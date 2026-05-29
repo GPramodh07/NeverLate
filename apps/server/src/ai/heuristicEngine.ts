@@ -8,6 +8,12 @@ export interface Email {
   priority?: string;
 }
 
+export interface CalendarAttendee {
+  email?: string;
+  displayName?: string;
+  responseStatus?: string;
+}
+
 export interface CalendarEvent {
   id: string;
   title: string;
@@ -15,6 +21,8 @@ export interface CalendarEvent {
   end: string;
   location: string;
   priority?: string;
+  attendees?: CalendarAttendee[];
+  status?: string;
 }
 
 export interface SlackMessage {

@@ -1,6 +1,6 @@
 import { runCoralCommand } from "../utils/runCoralCommand.ts";
 import { coralCache } from "../utils/cache.ts";
-import type { Email, CalendarEvent } from "../ai/heuristicEngine.ts";
+import type { Email, CalendarEvent, CalendarAttendee } from "../ai/heuristicEngine.ts";
 
 // Realistic fallback demo data if Coral execution fails
 const FALLBACK_EMAILS: Email[] = [
@@ -143,19 +143,32 @@ export async function getUpcomingEvents(): Promise<CalendarEvent[]> {
   if (cached) return cached;
 
   try {
-    // Assuming a future 'calendar.events' source
     const rawData = await runCoralCommand<any[]>(
-      "SELECT * FROM calendar.events WHERE start >= CURRENT_TIMESTAMP ORDER BY start ASC LIMIT 15"
+      "SELECT * FROM google_calendar.events WHERE start_date_time >= CURRENT_TIMESTAMP ORDER BY start_date_time ASC LIMIT 50"
     );
 
-    const events: CalendarEvent[] = rawData.map((row) => ({
-      id: row.id || `coral-event-${Math.random()}`,
-      title: row.title || row.summary || "Busy",
-      start: row.start || row.startTime || new Date().toISOString(),
-      end: row.end || row.endTime || new Date(Date.now() + 3600000).toISOString(),
-      location: row.location || "",
-      priority: row.priority || "Normal",
-    }));
+    const events: CalendarEvent[] = rawData.map((row) => {
+      let attendees: CalendarAttendee[] = [];
+      if (row.attendees) {
+        try {
+          attendees = typeof row.attendees === 'string' ? JSON.parse(row.attendees) : row.attendees;
+        } catch (e) {
+          console.warn("Failed to parse attendees for event:", row.id);
+          attendees = [];
+        }
+      }
+
+      return {
+        id: row.id || `coral-event-${Math.random()}`,
+        title: row.summary || "Busy",
+        start: row.start_date_time || row.start_date || new Date().toISOString(),
+        end: row.end_date_time || row.end_date || new Date(Date.now() + 3600000).toISOString(),
+        location: row.location || "",
+        attendees: attendees,
+        status: row.status || "",
+        priority: "Normal",
+      };
+    });
 
     coralCache.set(cacheKey, events);
     return events;
