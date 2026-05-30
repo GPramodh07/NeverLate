@@ -7,6 +7,7 @@ interface InsightsProps {
 
 export default function Insights({ isDark }: InsightsProps) {
   const { data, loading } = useFetchWithFallback('http://localhost:3000/api/insights', {
+    source: 'fallback' as 'fallback' | 'live',
     velocity: insightsVelocity,
     counters: insightsCounters,
     risks: insightsRisks,
@@ -17,6 +18,7 @@ export default function Insights({ isDark }: InsightsProps) {
   const displayCounters = data?.counters || insightsCounters;
   const displayRisks = data?.risks || insightsRisks;
   const displaySuggestions = data?.suggestions || insightsSuggestions;
+  const source = data?.source || 'fallback';
 
   if (loading) {
     return (
@@ -34,13 +36,23 @@ export default function Insights({ isDark }: InsightsProps) {
       <header className="col-span-12 mb-4 flex flex-wrap justify-between items-end gap-4">
         <div>
           <h2 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-800'}`}>Risk Insights</h2>
-          <p className={`${isDark ? 'text-zinc-500' : 'text-slate-500'} mt-1 text-sm font-medium`}>Intelligence engine detected 3 high-priority schedule conflicts.</p>
+          <p className={`${isDark ? 'text-zinc-500' : 'text-slate-500'} mt-1 text-sm font-medium`}>Intelligence engine detected {displayRisks.length} high-priority schedule conflicts.</p>
         </div>
-        <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl hover:scale-[1.01] transition-transform ${
-          isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
-        }`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse"></span>
-          <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>AI Monitoring Active</span>
+        <div className="flex items-center gap-3">
+          {source && (
+            <div className={`border shadow-sm flex items-center gap-2 px-3 py-1.5 rounded-xl ${isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'}`}>
+              <span className={`w-2 h-2 rounded-full ${source === 'live' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                {source === 'live' ? 'Connected' : 'Demo Mode'}
+              </span>
+            </div>
+          )}
+          <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl hover:scale-[1.01] transition-transform ${
+            isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
+          }`}>
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse"></span>
+            <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>AI Monitoring Active</span>
+          </div>
         </div>
       </header>
 

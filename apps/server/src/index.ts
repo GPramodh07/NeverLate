@@ -6,6 +6,8 @@ import { processDashboardData, processChat, getActiveNotifications } from "./ai/
 import { getRecentEmails, getUpcomingEvents, verifyCoralSource, getCoralUserProfile } from "./services/coralService.ts";
 import { getEventsContext } from "./services/eventsProcessor.ts";
 import { getRemindersContext } from "./services/remindersProcessor.ts";
+import { getActionsContext } from "./services/actionsProcessor.ts";
+import { getInsightsContext } from "./services/insightsProcessor.ts";
 import { getPreferences, updatePreference } from "./utils/preferences.ts";
 // --- New REST Endpoints for Demo Data ---
 // These endpoints load from the shared mockData file to preserve hackathon velocity and demo reliability
@@ -207,21 +209,37 @@ app.get("/api/reminders", async (req, res) => {
   }
 });
 
-app.get("/api/insights", (req, res) => {
-  res.json({
-    velocity: insightsVelocity,
-    counters: insightsCounters,
-    risks: insightsRisks,
-    suggestions: insightsSuggestions,
-  });
+app.get("/api/insights", async (req, res) => {
+  try {
+    const data = await getInsightsContext();
+    res.json(data);
+  } catch (error) {
+    console.error("Error processing insights context", error);
+    res.json({
+      source: "fallback",
+      generatedAt: new Date().toISOString(),
+      velocity: insightsVelocity,
+      counters: insightsCounters,
+      risks: insightsRisks,
+      suggestions: insightsSuggestions,
+    });
+  }
 });
 
-app.get("/api/actions", (req, res) => {
-  res.json({
-    stats: actionsStatsList,
-    pending: actionsPendingList,
-    weeklyChart: actionsWeeklyChart,
-  });
+app.get("/api/actions", async (req, res) => {
+  try {
+    const data = await getActionsContext();
+    res.json(data);
+  } catch (error) {
+    console.error("Error processing actions context", error);
+    res.json({
+      source: "fallback",
+      generatedAt: new Date().toISOString(),
+      stats: actionsStatsList,
+      pending: actionsPendingList,
+      weeklyChart: actionsWeeklyChart,
+    });
+  }
 });
 
 app.listen(port, () => {
