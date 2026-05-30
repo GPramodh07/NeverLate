@@ -10,11 +10,11 @@ interface SidebarProps {
 export default function Sidebar({ activePage, setActivePage, isDark }: SidebarProps) {
   const { sources } = useSources();
   const connectedSources = sources.filter(s => s.connected);
-  
+
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: "dashboard" },
     // { id: "dashboard2", label: "Dashboard 2", icon: "dashboard" },
-    { id: "events", label: "Agenda / Events", icon: "calendar_today" },
+    { id: "events", label: "Events", icon: "calendar_today" },
     { id: "reminders", label: "Reminders", icon: "notifications_active" },
     { id: "actions", label: "Actions", icon: "bolt" },
     { id: "chat", label: "AI Chat", icon: "forum" },
@@ -26,8 +26,8 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
   return (
     <aside
       className={`h-screen w-64 fixed left-0 top-0 border-r flex flex-col p-6 overflow-y-auto z-50 transition-all duration-300 ${isDark
-          ? "bg-[#0a0a0c] border-zinc-850 text-zinc-300 shadow-xl shadow-primary/5"
-          : "bg-white/80 border-slate-200 backdrop-blur-xl text-slate-800 shadow-xl shadow-primary/5"
+        ? "bg-[#0a0a0c] border-zinc-850 text-zinc-300 shadow-xl shadow-primary/5"
+        : "bg-white/80 border-slate-200 backdrop-blur-xl text-slate-800 shadow-xl shadow-primary/5"
         }`}
     >
       {/* Brand Logo */}
@@ -47,12 +47,12 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
               key={item.id}
               onClick={() => setActivePage(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-left transition-all duration-200 active:scale-[0.98] ${isActive
-                  ? isDark
-                    ? "bg-violet-600/20 text-violet-300"
-                    : "bg-purple-100 text-purple-700"
-                  : isDark
-                    ? "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
-                    : "text-slate-600 hover:text-slate-800 hover:bg-slate-50"
+                ? isDark
+                  ? "bg-violet-600/20 text-violet-300"
+                  : "bg-purple-100 text-purple-700"
+                : isDark
+                  ? "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
+                  : "text-slate-600 hover:text-slate-800 hover:bg-slate-50"
                 }`}
             >
               <span
@@ -98,8 +98,8 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
             <button
               onClick={() => setActivePage("sources")}
               className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-semibold hover:scale-105 transition-all ${isDark
-                  ? "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
-                  : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                ? "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+                : "bg-slate-200 text-slate-600 hover:bg-slate-300"
                 }`}
             >
               +
@@ -110,8 +110,8 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
         {/* Upgrade Card / Premium Banner */}
         <div
           className={`p-4 rounded-xl border ${isDark
-              ? "bg-violet-600/10 border-violet-500/20"
-              : "bg-purple-600/5 border-purple-600/10"
+            ? "bg-violet-600/10 border-violet-500/20"
+            : "bg-purple-600/5 border-purple-600/10"
             }`}
         >
           <p
@@ -127,8 +127,8 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
           <button
             onClick={() => setActivePage("settings")}
             className={`w-full py-2 text-xs font-bold rounded-lg transition-all active:scale-[0.98] ${isDark
-                ? "bg-violet-600 text-white hover:bg-violet-700 shadow-md shadow-violet-600/20"
-                : "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-600/20"
+              ? "bg-violet-600 text-white hover:bg-violet-700 shadow-md shadow-violet-600/20"
+              : "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-600/20"
               }`}
           >
             Upgrade to Pro
