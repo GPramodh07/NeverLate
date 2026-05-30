@@ -117,11 +117,11 @@ app.post("/api/sources/connect", async (req, res) => {
 
     const profile = await getCoralUserProfile();
 
-    res.json({ 
-      success: true, 
-      connected: true, 
-      enabled: true, 
-      email: profile?.email || undefined, 
+    res.json({
+      success: true,
+      connected: true,
+      enabled: true,
+      email: profile?.email || undefined,
       name: profile?.name || undefined,
       avatarUrl: profile?.avatarUrl || undefined
     });
@@ -159,9 +159,13 @@ app.get("/api/ai/dashboard", async (req, res) => {
 
 app.post("/api/ai/chat", async (req, res) => {
   try {
-    const { query } = req.body;
-    const reply = await processChat(query);
-    res.json({ reply });
+    const { query, context } = req.body;
+    if (typeof query !== 'string' || !query.trim()) {
+      return res.status(400).json({ error: "Query is required and must be a string." });
+    }
+    // Pass the query and context array to the AI engine
+    const response = await processChat(query, context);
+    res.json(response);
   } catch (error) {
     console.error("Error in AI chat", error);
     res.status(500).json({ error: "Failed to process chat" });
