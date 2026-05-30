@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { eventsStatsList, eventsNextUpList } from '../data/mockData'
+import { useFetchWithFallback } from '../hooks/useFetchWithFallback'
 
 interface EventsProps {
   isDark: boolean
@@ -21,6 +22,14 @@ import PlatformIcon from '../components/PlatformIcon'
 export default function Events({ isDark }: EventsProps) {
   const [selectedDay, setSelectedDay] = useState<'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun'>('Wed')
   const [expandedBriefing, setExpandedBriefing] = useState<string | null>(null)
+  
+  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/events', {
+    stats: eventsStatsList,
+    nextUp: eventsNextUpList,
+  });
+
+  const displayStats = data?.stats || eventsStatsList;
+  const displayNextUp = data?.nextUp || eventsNextUpList;
   
   // Custom week schedule items for the interactive grid
   const weekEvents: Record<'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun', WeekEventItem[]> = {
@@ -77,6 +86,15 @@ export default function Events({ isDark }: EventsProps) {
 
   const activeDayEvents = weekEvents[selectedDay] || []
 
+  if (loading) {
+    return (
+      <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className={`${isDark ? 'text-zinc-400' : 'text-slate-500'} font-medium animate-pulse`}>Syncing calendar events...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto grid grid-cols-12 gap-6 animate-in fade-in duration-500">
       
@@ -103,7 +121,7 @@ export default function Events({ isDark }: EventsProps) {
 
       {/* KPI Stats Section */}
       <section className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-        {eventsStatsList.map((stat, idx) => (
+        {displayStats.map((stat: any, idx: number) => (
           <div key={idx} className={`p-5 rounded-2xl border shadow-sm flex items-center space-x-4 hover:-translate-y-0.5 transition-transform duration-200 ${
             isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
           }`}>
@@ -371,7 +389,7 @@ export default function Events({ isDark }: EventsProps) {
           </div>
 
           <div className="space-y-4">
-            {eventsNextUpList.map((item, idx) => {
+            {displayNextUp.map((item: any, idx: number) => {
               const isExpanded = expandedBriefing === item.title
               const briefing = aiBriefings[item.title]
 
