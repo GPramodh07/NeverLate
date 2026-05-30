@@ -5,6 +5,24 @@ import path from "path";
 import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine.ts";
 import { getRecentEmails, getUpcomingEvents, verifyCoralSource } from "./services/coralService.ts";
 import { getPreferences, updatePreference } from "./utils/preferences.ts";
+// --- New REST Endpoints for Demo Data ---
+// These endpoints load from the shared mockData file to preserve hackathon velocity and demo reliability
+import {
+  eventsStatsList,
+  eventsNextUpList,
+  remindersStatsList,
+  remindersUrgentList,
+  remindersActiveList,
+  remindersUpcomingList,
+  remindersAiInsightsList,
+  insightsVelocity,
+  insightsCounters,
+  insightsRisks,
+  insightsSuggestions,
+  actionsStatsList,
+  actionsPendingList,
+  actionsWeeklyChart,
+} from "./data/mockData.ts";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
@@ -80,7 +98,7 @@ app.post("/api/sources/connect", async (req, res) => {
 
     // Force enabled to true since the user actively verified it
     updatePreference(`${sourceId}_enabled` as any, true);
-    
+
     res.json({ success: true, connected: true, enabled: true });
   } catch (error) {
     console.error("Error verifying source connection", error);
@@ -133,6 +151,40 @@ app.get("/api/ai/notifications", async (req, res) => {
     console.error("Error in AI notifications", error);
     res.status(500).json({ error: "Failed to process notifications" });
   }
+});
+
+app.get("/api/events", (req, res) => {
+  res.json({
+    stats: eventsStatsList,
+    nextUp: eventsNextUpList,
+  });
+});
+
+app.get("/api/reminders", (req, res) => {
+  res.json({
+    stats: remindersStatsList,
+    urgent: remindersUrgentList,
+    active: remindersActiveList,
+    upcoming: remindersUpcomingList,
+    aiInsights: remindersAiInsightsList,
+  });
+});
+
+app.get("/api/insights", (req, res) => {
+  res.json({
+    velocity: insightsVelocity,
+    counters: insightsCounters,
+    risks: insightsRisks,
+    suggestions: insightsSuggestions,
+  });
+});
+
+app.get("/api/actions", (req, res) => {
+  res.json({
+    stats: actionsStatsList,
+    pending: actionsPendingList,
+    weeklyChart: actionsWeeklyChart,
+  });
 });
 
 app.listen(port, () => {

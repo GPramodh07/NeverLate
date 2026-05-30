@@ -6,6 +6,7 @@ import {
   remindersUpcomingList,
   remindersAiInsightsList
 } from '../data/mockData'
+import { useFetchWithFallback } from '../hooks/useFetchWithFallback'
 
 interface RemindersProps {
   isDark: boolean
@@ -18,6 +19,20 @@ export default function Reminders({ isDark }: RemindersProps) {
   const [actionTriggered, setActionTriggered] = useState<Record<string, string>>({})
   // Urgent overdue count state
   const [urgentVisible, setUrgentVisible] = useState(true)
+
+  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/reminders', {
+    stats: remindersStatsList,
+    urgent: remindersUrgentList,
+    active: remindersActiveList,
+    upcoming: remindersUpcomingList,
+    aiInsights: remindersAiInsightsList,
+  });
+
+  const displayStats = data?.stats || remindersStatsList;
+  const displayUrgent = data?.urgent || remindersUrgentList;
+  const displayActive = data?.active || remindersActiveList;
+  const displayUpcoming = data?.upcoming || remindersUpcomingList;
+  const displayAiInsights = data?.aiInsights || remindersAiInsightsList;
 
   const toggleComplete = (id: string) => {
     if (completedList.includes(id)) {
@@ -47,6 +62,15 @@ export default function Reminders({ isDark }: RemindersProps) {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className={`${isDark ? 'text-zinc-400' : 'text-slate-500'} font-medium animate-pulse`}>Syncing reminders...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto grid grid-cols-12 gap-6 animate-in fade-in duration-500">
       
@@ -70,7 +94,7 @@ export default function Reminders({ isDark }: RemindersProps) {
 
       {/* KPI Stats Block */}
       <section className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-        {remindersStatsList.map((stat, idx) => (
+        {displayStats.map((stat: any, idx: number) => (
           <div key={idx} className={`p-5 rounded-2xl border shadow-sm flex items-center space-x-4 hover:-translate-y-0.5 transition-transform duration-200 ${
             isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
           }`}>
@@ -89,7 +113,7 @@ export default function Reminders({ isDark }: RemindersProps) {
       <div className="col-span-12 lg:col-span-8 space-y-6">
         
         {/* Urgent/Overdue Notifications */}
-        {urgentVisible && remindersUrgentList.map((urg, idx) => (
+        {urgentVisible && displayUrgent.map((urg: any, idx: number) => (
           <section 
             key={idx}
             className="p-5 rounded-2xl border bg-gradient-to-r from-rose-500/10 to-red-500/5 dark:from-rose-950/20 dark:to-red-950/10 border-rose-500/20 dark:border-rose-900/40 shadow-sm relative overflow-hidden flex flex-wrap justify-between items-center gap-4 group"
@@ -151,12 +175,12 @@ export default function Reminders({ isDark }: RemindersProps) {
               Active Reminders
             </h3>
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              {remindersActiveList.length - completedList.length} remaining today
+              {displayActive.length - completedList.length} remaining today
             </span>
           </div>
 
           <div className="space-y-3">
-            {remindersActiveList.map((rem) => {
+            {displayActive.map((rem: any) => {
               const isCompleted = completedList.includes(rem.id)
               const hasTrigger = actionTriggered[rem.id]
 
@@ -263,7 +287,7 @@ export default function Reminders({ isDark }: RemindersProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {remindersAiInsightsList.map((ins, idx) => {
+            {displayAiInsights.map((ins: any, idx: number) => {
               const isSp = ins.isSpecial
               const hasTrigger = actionTriggered[`suggest-${idx}`]
 
@@ -452,7 +476,7 @@ export default function Reminders({ isDark }: RemindersProps) {
           </div>
 
           <div className="space-y-3.5">
-            {remindersUpcomingList.map((item, idx) => (
+            {displayUpcoming.map((item: any, idx: number) => (
               <div 
                 key={idx} 
                 className={`p-3 rounded-xl border flex items-center gap-3.5 transition-colors ${

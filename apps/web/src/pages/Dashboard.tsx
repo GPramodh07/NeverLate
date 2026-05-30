@@ -4,6 +4,7 @@ import {
   dashboardAgenda,
 } from "../data/mockData";
 import { useSources } from "../context/SourcesContext";
+import { useFetchWithFallback } from "../hooks/useFetchWithFallback";
 
 interface DashboardProps {
   setActivePage: (page: string) => void;
@@ -13,6 +14,36 @@ interface DashboardProps {
 export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
   const { sources } = useSources();
   const connectedSources = sources.filter(s => s.connected);
+
+  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/ai/dashboard', {
+    metrics: dashboardKpis,
+    insights: dashboardInsights,
+    timeline: dashboardAgenda,
+  });
+
+  const displayKpis = data?.metrics || dashboardKpis;
+  
+  // The API returns insights that might need a slight map to match the UI precisely if they differ,
+  // but we'll try to use them directly or fallback.
+  const displayInsights = (data?.insights || dashboardInsights).map((item: any) => ({
+    type: item.type || item.severity || 'Insight',
+    text: item.text || item.message || '',
+    desc: item.desc || item.context || 'Action required',
+    action: item.action || 'View Details',
+    lightColor: item.lightColor || 'text-blue-600 bg-blue-50',
+    darkColor: item.darkColor || 'text-blue-400 bg-blue-500/10'
+  }));
+
+  const displayAgenda = data?.timeline || dashboardAgenda;
+
+  if (loading) {
+    return (
+      <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className={`${isDark ? 'text-zinc-400' : 'text-slate-500'} font-medium animate-pulse`}>Syncing intelligence feed...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto grid grid-cols-12 gap-6 animate-in fade-in duration-500">
@@ -28,7 +59,7 @@ export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
 
       {/* KPI Section */}
       <div className="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
-        {dashboardKpis.map((kpi, idx) => (
+        {displayKpis.map((kpi: any, idx: number) => (
           <div
             key={idx}
             className={`p-5 rounded-2xl border shadow-sm flex items-center space-x-4 hover:-translate-y-0.5 transition-transform duration-200 ${
@@ -159,7 +190,7 @@ export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {dashboardInsights.map((insight, idx) => (
+            {displayInsights.slice(0, 3).map((insight: any, idx: number) => (
               <div
                 key={idx}
                 className={`p-5 rounded-2xl border shadow-sm flex flex-col hover:-translate-y-0.5 transition-transform duration-200 ${
@@ -299,13 +330,13 @@ export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
               isDark ? "before:bg-zinc-800" : "before:bg-slate-100"
             }`}
           >
-            {dashboardAgenda.map((item, idx) => (
+            {displayAgenda.map((item: any, idx: number) => (
               <div
                 key={idx}
                 className="flex relative pl-5 animate-in fade-in slide-in-from-left-2 duration-300"
               >
                 <div
-                  className={`absolute left-0 top-[5px] w-2 h-2 rounded-full ${isDark ? item.dotColorDark : item.dotColorLight} shadow-[0_0_8px_rgba(124,58,237,0.3)]`}
+                  className={`absolute left-0 top-[5px] w-2 h-2 rounded-full ${isDark ? (item.dotColorDark || 'bg-violet-500') : (item.dotColorLight || 'bg-purple-600')} shadow-[0_0_8px_rgba(124,58,237,0.3)]`}
                 />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -327,7 +358,7 @@ export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
                   >
                     {item.title}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-medium">{item.type}</p>
+                  <p className="text-[10px] text-slate-400 font-medium">{item.type || item.location || 'Calendar'}</p>
                 </div>
               </div>
             ))}

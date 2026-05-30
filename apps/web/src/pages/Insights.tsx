@@ -1,10 +1,32 @@
 import { insightsVelocity, insightsCounters, insightsRisks, insightsSuggestions } from '../data/mockData'
+import { useFetchWithFallback } from '../hooks/useFetchWithFallback'
 
 interface InsightsProps {
   isDark: boolean
 }
 
 export default function Insights({ isDark }: InsightsProps) {
+  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/insights', {
+    velocity: insightsVelocity,
+    counters: insightsCounters,
+    risks: insightsRisks,
+    suggestions: insightsSuggestions,
+  });
+
+  const displayVelocity = data?.velocity || insightsVelocity;
+  const displayCounters = data?.counters || insightsCounters;
+  const displayRisks = data?.risks || insightsRisks;
+  const displaySuggestions = data?.suggestions || insightsSuggestions;
+
+  if (loading) {
+    return (
+      <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className={`${isDark ? 'text-zinc-400' : 'text-slate-500'} font-medium animate-pulse`}>Analyzing insights...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto grid grid-cols-12 gap-6 animate-in fade-in duration-500">
       
@@ -33,7 +55,7 @@ export default function Insights({ isDark }: InsightsProps) {
 
         {/* Mock Chart Bars */}
         <div className="flex-1 flex items-end justify-between gap-3 mt-6 h-36">
-          {insightsVelocity.map((bar, idx) => (
+          {displayVelocity.map((bar: any, idx: number) => (
             <div 
               key={idx} 
               className={`w-full rounded-t-lg relative group h-full flex flex-col justify-end cursor-pointer ${
@@ -57,7 +79,7 @@ export default function Insights({ isDark }: InsightsProps) {
         </div>
 
         <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-4 px-1">
-          {insightsVelocity.map((bar, idx) => (
+          {displayVelocity.map((bar: any, idx: number) => (
             <span key={idx} className={bar.active ? (isDark ? 'text-violet-400' : 'text-purple-600') : ''}>{bar.day}</span>
           ))}
         </div>
@@ -65,7 +87,7 @@ export default function Insights({ isDark }: InsightsProps) {
 
       {/* Priority Scoring Cards */}
       <div className="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4 h-auto lg:h-[320px]">
-        {insightsCounters.map((c, idx) => (
+        {displayCounters.map((c: any, idx: number) => (
           <div key={idx} className={`p-6 rounded-2xl shadow-sm flex flex-col justify-between border-l-[5px] border-y border-r hover:-translate-y-0.5 transition-all duration-200 ${
             isDark ? c.darkBorder : c.lightBorder
           }`}>
@@ -83,7 +105,7 @@ export default function Insights({ isDark }: InsightsProps) {
       <div className="col-span-12 lg:col-span-7">
         <h3 className={`text-base font-bold mb-4 px-1 ${isDark ? 'text-white' : 'text-slate-800'}`}>Active Risk List</h3>
         <div className="space-y-3">
-          {insightsRisks.map((risk, idx) => (
+          {displayRisks.map((risk: any, idx: number) => (
             <div key={idx} className={`p-4 rounded-2xl border shadow-sm flex items-center gap-4 group transition-all duration-200 ${
               isDark 
                 ? 'bg-[#18181b] border-zinc-800 hover:border-violet-500/20 hover:shadow-md' 
@@ -113,7 +135,7 @@ export default function Insights({ isDark }: InsightsProps) {
       <div className="col-span-12 lg:col-span-5">
         <h3 className={`text-base font-bold mb-4 px-1 ${isDark ? 'text-white' : 'text-slate-800'}`}>Smart Recommendations</h3>
         <div className="space-y-4">
-          {insightsSuggestions.map((sug, idx) => (
+          {displaySuggestions.map((sug: any, idx: number) => (
             <div key={idx} className={`p-6 rounded-2xl border shadow-sm relative overflow-hidden group transition-all duration-200 ${
               isDark ? 'bg-[#18181b] border-zinc-800 hover:border-violet-500/20' : 'bg-white border-slate-100 hover:border-purple-600/10'
             }`}>
