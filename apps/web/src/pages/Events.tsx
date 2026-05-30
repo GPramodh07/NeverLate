@@ -122,7 +122,6 @@ export default function Events({ isDark }: EventsProps) {
   const aiBriefings: Record<string, AIBriefing> = data?.aiBriefings || {};
   const weekEvents: Record<string, TimelineItem[]> = data?.weekEvents || {};
   const timezones: TimezoneItem[] | null = data?.timezones || null;
-  const displayGmailEvents = data?.gmailEvents || fallbackGmailEvents;
 
   const handleGenerateDraft = (email: GmailEvent) => {
     if (smartDraft[email.id]) {

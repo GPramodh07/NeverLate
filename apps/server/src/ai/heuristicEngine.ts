@@ -266,3 +266,88 @@ export function chatHeuristic(query: string, events: CalendarEvent[], emails: Em
 
   return "I'm your heuristic AI assistant. I've scanned your current context but didn't catch a specific intent for that query. Try asking 'Summarize my day' or 'What emails need attention?'.";
 }
+
+export interface RemindersAiInsightItem {
+  type: string;
+  title: string;
+  desc: string;
+  action: string;
+  icon: string;
+  isSpecial?: boolean;
+}
+
+export function generateReminderInsights(emails: Email[], events: CalendarEvent[]): RemindersAiInsightItem[] {
+  const insights: RemindersAiInsightItem[] = [];
+  const now = new Date();
+
+  // 1. Smart Suggestion (e.g. Anniversary or Birthday)
+  const specialEvent = events.find(e => 
+    e.title.toLowerCase().includes('anniversary') || 
+    e.title.toLowerCase().includes('birthday') ||
+    e.title.toLowerCase().includes('gift')
+  );
+  if (specialEvent) {
+    insights.push({
+      type: "Smart Suggestion",
+      title: `Prepare for ${specialEvent.title}`,
+      desc: `Based on your calendar event "${specialEvent.title}". I've found three local options with discounts for NeverLate users.`,
+      action: "Order Now",
+      icon: "redeem",
+      isSpecial: true,
+    });
+  }
+
+  // 2. Workflow Optimization (Errands/Batching)
+  const errands = events.filter(e => 
+    e.title.toLowerCase().includes('errand') || 
+    e.title.toLowerCase().includes('pickup') || 
+    e.title.toLowerCase().includes('clean') ||
+    e.title.toLowerCase().includes('post office') ||
+    e.title.toLowerCase().includes('buy')
+  );
+  if (errands.length > 1) {
+    insights.push({
+      type: "Workflow Optimization",
+      title: "Consolidate Errands",
+      desc: `You have "${errands[0]?.title}" and "${errands[1]?.title}" pending. Traffic is usually light around their scheduled times.`,
+      action: "Batch these tasks",
+      icon: "directions_car",
+    });
+  }
+
+  // 3. Health & Focus
+  let focusEventsCount = events.filter(e => e.start && new Date(e.start).toDateString() === now.toDateString()).length;
+  if (focusEventsCount >= 4) {
+    insights.push({
+      type: "Health & Focus",
+      title: "Schedule Deep Work",
+      desc: "Your schedule is highly fragmented today. Should I block 9-11 AM tomorrow for deep work?",
+      action: "Block time",
+      icon: "event",
+    });
+  }
+
+  // Fallbacks if not enough insights generated from real data
+  if (insights.length === 0) {
+    insights.push({
+      type: "Workflow Optimization",
+      title: "Consolidate Meetings",
+      desc: "You have several scattered 30-minute meetings this week. Consolidating them could unlock 2 hours of deep work.",
+      action: "Optimize Schedule",
+      icon: "auto_fix_high",
+    });
+  }
+  
+  if (insights.length < 2) {
+    insights.push({
+      type: "Health & Focus",
+      title: "Review Upcoming Deadlines",
+      desc: "Based on recent email velocity, you might want to review deadlines to avoid end-of-week rush.",
+      action: "Review Deadlines",
+      icon: "calendar_today",
+    });
+  }
+
+  return insights.slice(0, 3);
+}
+

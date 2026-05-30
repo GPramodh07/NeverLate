@@ -21,12 +21,16 @@ export default function Reminders({ isDark }: RemindersProps) {
   const [urgentVisible, setUrgentVisible] = useState(true)
 
   const { data, loading } = useFetchWithFallback('http://localhost:3000/api/reminders', {
+    source: 'fallback' as 'fallback' | 'live',
     stats: remindersStatsList,
     urgent: remindersUrgentList,
     active: remindersActiveList,
     upcoming: remindersUpcomingList,
     aiInsights: remindersAiInsightsList,
   });
+
+  console.log("=== Reminder Fetched Data ===")
+  console.log(data)
 
   const displayStats = data?.stats || remindersStatsList;
   const displayUrgent = data?.urgent || remindersUrgentList;
@@ -73,7 +77,7 @@ export default function Reminders({ isDark }: RemindersProps) {
 
   return (
     <div className="pt-20 px-6 pb-12 max-w-[1440px] mx-auto grid grid-cols-12 gap-6 animate-in fade-in duration-500">
-      
+
       {/* Page Header */}
       <header className="col-span-12 mb-4 flex flex-wrap justify-between items-end gap-4">
         <div>
@@ -82,22 +86,30 @@ export default function Reminders({ isDark }: RemindersProps) {
             Task reminders linked automatically to emails, bills, calendar markers, and local retail systems.
           </p>
         </div>
-        <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl ${
-          isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
-        }`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-          <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>
-            3 Critical Reminders Pending
-          </span>
+        <div className="flex items-center gap-3">
+          {data?.source && (
+            <div className={`border shadow-sm flex items-center gap-2 px-3 py-1.5 rounded-xl ${isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'}`}>
+              <span className={`w-2 h-2 rounded-full ${data.source === 'live' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                {data.source === 'live' ? 'Connected' : 'Demo Mode'}
+              </span>
+            </div>
+          )}
+          <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl ${isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
+            }`}>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>
+              3 Critical Reminders Pending
+            </span>
+          </div>
         </div>
       </header>
 
       {/* KPI Stats Block */}
       <section className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
         {displayStats.map((stat: any, idx: number) => (
-          <div key={idx} className={`p-5 rounded-2xl border shadow-sm flex items-center space-x-4 hover:-translate-y-0.5 transition-transform duration-200 ${
-            isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
-          }`}>
+          <div key={idx} className={`p-5 rounded-2xl border shadow-sm flex items-center space-x-4 hover:-translate-y-0.5 transition-transform duration-200 ${isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
+            }`}>
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isDark ? stat.darkColor : stat.lightColor}`}>
               <span className="material-symbols-outlined text-[24px]">{stat.icon}</span>
             </div>
@@ -111,10 +123,10 @@ export default function Reminders({ isDark }: RemindersProps) {
 
       {/* Reminders List & Active Triggers (Col-span 8) */}
       <div className="col-span-12 lg:col-span-8 space-y-6">
-        
+
         {/* Urgent/Overdue Notifications */}
         {urgentVisible && displayUrgent.map((urg: any, idx: number) => (
-          <section 
+          <section
             key={idx}
             className="p-5 rounded-2xl border bg-gradient-to-r from-rose-500/10 to-red-500/5 dark:from-rose-950/20 dark:to-red-950/10 border-rose-500/20 dark:border-rose-900/40 shadow-sm relative overflow-hidden flex flex-wrap justify-between items-center gap-4 group"
           >
@@ -135,9 +147,9 @@ export default function Reminders({ isDark }: RemindersProps) {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => {
                   setActionTriggered(prev => ({ ...prev, 'urgent-budget': 'Updating Draft...' }))
                   setTimeout(() => {
@@ -145,19 +157,17 @@ export default function Reminders({ isDark }: RemindersProps) {
                     setTimeout(() => setUrgentVisible(false), 800)
                   }, 1200)
                 }}
-                className={`py-2 px-4 rounded-xl text-xs font-bold transition-all active:scale-[0.98] ${
-                  isDark 
-                    ? 'bg-rose-600 text-white hover:bg-rose-700' 
+                className={`py-2 px-4 rounded-xl text-xs font-bold transition-all active:scale-[0.98] ${isDark
+                    ? 'bg-rose-600 text-white hover:bg-rose-700'
                     : 'bg-red-500 text-white hover:bg-red-600'
-                }`}
+                  }`}
               >
                 {actionTriggered['urgent-budget'] || 'Resolve Now'}
               </button>
-              <button 
+              <button
                 onClick={() => setUrgentVisible(false)}
-                className={`p-2 rounded-xl border border-transparent transition-all ${
-                  isDark ? 'text-zinc-500 hover:bg-white/5' : 'text-slate-400 hover:bg-slate-100'
-                }`}
+                className={`p-2 rounded-xl border border-transparent transition-all ${isDark ? 'text-zinc-500 hover:bg-white/5' : 'text-slate-400 hover:bg-slate-100'
+                  }`}
               >
                 <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
@@ -166,9 +176,8 @@ export default function Reminders({ isDark }: RemindersProps) {
         ))}
 
         {/* Active Reminders Block */}
-        <section className={`p-6 rounded-2xl border shadow-sm ${
-          isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
-        }`}>
+        <section className={`p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
+          }`}>
           <div className="flex justify-between items-center mb-6">
             <h3 className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-800'}`}>
               <span className={`material-symbols-outlined text-[20px] ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>checklist</span>
@@ -185,29 +194,27 @@ export default function Reminders({ isDark }: RemindersProps) {
               const hasTrigger = actionTriggered[rem.id]
 
               return (
-                <div 
+                <div
                   key={rem.id}
-                  className={`p-4 rounded-xl border flex items-center justify-between gap-4 transition-all duration-300 ${
-                    isCompleted
-                      ? isDark 
-                        ? 'bg-zinc-900/40 border-zinc-850 opacity-40' 
+                  className={`p-4 rounded-xl border flex items-center justify-between gap-4 transition-all duration-300 ${isCompleted
+                      ? isDark
+                        ? 'bg-zinc-900/40 border-zinc-850 opacity-40'
                         : 'bg-slate-50/50 border-slate-100 opacity-50'
                       : isDark
                         ? 'bg-zinc-900 border-zinc-800 hover:border-violet-500/20'
                         : 'bg-white border-slate-100 hover:border-purple-200'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {/* Custom Circle Checkbox */}
-                    <button 
+                    <button
                       onClick={() => toggleComplete(rem.id)}
-                      className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-all ${
-                        isCompleted
+                      className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-all ${isCompleted
                           ? 'bg-emerald-500 border-emerald-500 text-white'
                           : isDark
                             ? 'border-zinc-700 hover:border-violet-500 bg-[#0a0a0c]/80'
                             : 'border-slate-300 hover:border-purple-600 bg-slate-50'
-                      }`}
+                        }`}
                     >
                       {isCompleted && (
                         <span className="material-symbols-outlined text-[16px] font-extrabold">check</span>
@@ -215,11 +222,10 @@ export default function Reminders({ isDark }: RemindersProps) {
                     </button>
 
                     <div className="min-w-0">
-                      <p className={`text-xs font-bold leading-normal transition-all ${
-                        isCompleted 
-                          ? 'text-slate-400 line-through font-medium' 
+                      <p className={`text-xs font-bold leading-normal transition-all ${isCompleted
+                          ? 'text-slate-400 line-through font-medium'
                           : isDark ? 'text-white' : 'text-slate-800'
-                      }`}>
+                        }`}>
                         {rem.title}
                       </p>
                       <div className="flex items-center gap-2 mt-0.5">
@@ -228,9 +234,8 @@ export default function Reminders({ isDark }: RemindersProps) {
                           {rem.time}
                         </span>
                         <span className="text-[10px] text-slate-400 font-semibold">•</span>
-                        <span className={`px-2 py-0.2 rounded text-[8px] font-bold uppercase ${
-                          isDark ? 'bg-zinc-800 text-zinc-400' : 'bg-slate-50 text-slate-600'
-                        }`}>
+                        <span className={`px-2 py-0.2 rounded text-[8px] font-bold uppercase ${isDark ? 'bg-zinc-800 text-zinc-400' : 'bg-slate-50 text-slate-600'
+                          }`}>
                           {rem.tag}
                         </span>
                       </div>
@@ -241,30 +246,28 @@ export default function Reminders({ isDark }: RemindersProps) {
                   {!isCompleted && (
                     <div className="flex items-center gap-2 shrink-0">
                       {rem.actionType === 'pay' ? (
-                        <button 
+                        <button
                           onClick={() => handleAction(rem.id, 'pay')}
                           disabled={!!hasTrigger}
-                          className={`py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
-                            hasTrigger
+                          className={`py-1.5 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${hasTrigger
                               ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
                               : isDark
                                 ? 'bg-violet-600 text-white hover:bg-violet-700'
                                 : 'bg-purple-600 text-white hover:bg-purple-700'
-                          }`}
+                            }`}
                         >
                           {hasTrigger || rem.actionLabel}
                         </button>
                       ) : (
-                        <button 
+                        <button
                           onClick={() => handleAction(rem.id, 'snooze')}
                           disabled={!!hasTrigger}
-                          className={`py-1.5 px-3 border rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
-                            hasTrigger
+                          className={`py-1.5 px-3 border rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${hasTrigger
                               ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
                               : isDark
                                 ? 'border-zinc-850 text-zinc-350 hover:bg-zinc-800 hover:text-white'
                                 : 'border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800'
-                          }`}
+                            }`}
                         >
                           {hasTrigger || rem.actionLabel}
                         </button>
@@ -292,17 +295,16 @@ export default function Reminders({ isDark }: RemindersProps) {
               const hasTrigger = actionTriggered[`suggest-${idx}`]
 
               return (
-                <div 
-                  key={idx} 
-                  className={`p-5 rounded-2xl border shadow-sm relative overflow-hidden group flex flex-col justify-between transition-all duration-300 ${
-                    isSp 
-                      ? isDark 
-                        ? 'bg-gradient-to-br from-violet-950/40 via-zinc-900 to-[#18181b] border-violet-500/30 hover:border-violet-500/50' 
+                <div
+                  key={idx}
+                  className={`p-5 rounded-2xl border shadow-sm relative overflow-hidden group flex flex-col justify-between transition-all duration-300 ${isSp
+                      ? isDark
+                        ? 'bg-gradient-to-br from-violet-950/40 via-zinc-900 to-[#18181b] border-violet-500/30 hover:border-violet-500/50'
                         : 'bg-gradient-to-br from-purple-100/50 via-white to-slate-50 border-purple-500/20 hover:border-purple-550/40'
                       : isDark
                         ? 'bg-[#18181b] border-zinc-800 hover:border-zinc-700'
                         : 'bg-white border-slate-100 hover:border-purple-200/50'
-                  }`}
+                    }`}
                 >
                   {isSp && (
                     <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none group-hover:scale-105 transition-transform duration-300 select-none">
@@ -315,15 +317,14 @@ export default function Reminders({ isDark }: RemindersProps) {
                       <span className={`material-symbols-outlined text-[15px] ${isSp ? 'text-purple-600 dark:text-violet-400 animate-pulse' : 'text-slate-400'}`}>
                         {ins.icon}
                       </span>
-                      <span className={`text-[9px] font-bold uppercase tracking-wider ${
-                        isSp 
-                          ? 'text-purple-600 dark:text-violet-400 font-extrabold' 
+                      <span className={`text-[9px] font-bold uppercase tracking-wider ${isSp
+                          ? 'text-purple-600 dark:text-violet-400 font-extrabold'
                           : 'text-slate-400'
-                      }`}>
+                        }`}>
                         {ins.type}
                       </span>
                     </div>
-                    
+
                     <h4 className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-800'}`}>
                       {ins.title}
                     </h4>
@@ -334,7 +335,7 @@ export default function Reminders({ isDark }: RemindersProps) {
 
                   <div className="mt-auto">
                     {isSp ? (
-                      <button 
+                      <button
                         onClick={() => {
                           setActionTriggered(prev => ({ ...prev, [`suggest-${idx}`]: 'Opening Florist Drawer...' }))
                           setTimeout(() => {
@@ -348,16 +349,15 @@ export default function Reminders({ isDark }: RemindersProps) {
                             }, 3000)
                           }, 1500)
                         }}
-                        className={`w-full py-2 text-white text-[11px] font-bold rounded-xl transition-all active:scale-[0.98] ${
-                          isDark 
-                            ? 'bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-600/20' 
+                        className={`w-full py-2 text-white text-[11px] font-bold rounded-xl transition-all active:scale-[0.98] ${isDark
+                            ? 'bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-600/20'
                             : 'bg-purple-600 hover:bg-purple-700 shadow-md shadow-purple-600/20'
-                        }`}
+                          }`}
                       >
                         {hasTrigger || ins.action}
                       </button>
                     ) : (
-                      <button 
+                      <button
                         onClick={() => {
                           setActionTriggered(prev => ({ ...prev, [`suggest-${idx}`]: 'Optimizing Calendar...' }))
                           setTimeout(() => {
@@ -371,11 +371,10 @@ export default function Reminders({ isDark }: RemindersProps) {
                             }, 3000)
                           }, 1200)
                         }}
-                        className={`w-full py-2 border bg-transparent text-[11px] font-bold rounded-xl transition-all active:scale-[0.98] ${
-                          isDark 
-                            ? 'border-violet-500 text-violet-400 hover:bg-violet-500/10' 
+                        className={`w-full py-2 border bg-transparent text-[11px] font-bold rounded-xl transition-all active:scale-[0.98] ${isDark
+                            ? 'border-violet-500 text-violet-400 hover:bg-violet-500/10'
                             : 'border-purple-600 text-purple-600 hover:bg-purple-50'
-                        }`}
+                          }`}
                       >
                         {hasTrigger || ins.action}
                       </button>
@@ -391,11 +390,10 @@ export default function Reminders({ isDark }: RemindersProps) {
 
       {/* Focus Gauge & Upcoming ledger (Col-span 4) */}
       <div className="col-span-12 lg:col-span-4 space-y-6">
-        
+
         {/* Custom Weekly Focus Efficiency SVG Gauge Widget */}
-        <section className={`p-6 rounded-2xl border shadow-sm ${
-          isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
-        }`}>
+        <section className={`p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
+          }`}>
           <div className="flex justify-between items-center mb-6">
             <h3 className={`text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-800'}`}>
               <span className={`material-symbols-outlined text-[20px] ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>query_stats</span>
@@ -409,13 +407,13 @@ export default function Reminders({ isDark }: RemindersProps) {
             <div className="relative w-36 h-36">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                 {/* Background Ring */}
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="42" 
-                  stroke={isDark ? '#27272a' : '#f1f5f9'} 
-                  strokeWidth="10" 
-                  fill="transparent" 
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  stroke={isDark ? '#27272a' : '#f1f5f9'}
+                  strokeWidth="10"
+                  fill="transparent"
                 />
                 {/* Gradient Definition */}
                 <defs>
@@ -425,16 +423,16 @@ export default function Reminders({ isDark }: RemindersProps) {
                   </linearGradient>
                 </defs>
                 {/* Progress Ring */}
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="42" 
-                  stroke="url(#gaugeGrad)" 
-                  strokeWidth="10" 
-                  strokeDasharray="263.8" 
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  stroke="url(#gaugeGrad)"
+                  strokeWidth="10"
+                  strokeDasharray="263.8"
                   strokeDashoffset="31.6" /* 88% remaining filled */
                   strokeLinecap="round"
-                  fill="transparent" 
+                  fill="transparent"
                   className="transition-all duration-1000 ease-out"
                 />
               </svg>
@@ -456,18 +454,16 @@ export default function Reminders({ isDark }: RemindersProps) {
               </div>
             </div>
 
-            <div className={`mt-4 p-2.5 rounded-xl border w-full text-center text-[10px] font-semibold ${
-              isDark ? 'bg-[#0a0a0c]/80 border-zinc-850 text-violet-400' : 'bg-purple-50/50 border-purple-100 text-purple-700'
-            }`}>
+            <div className={`mt-4 p-2.5 rounded-xl border w-full text-center text-[10px] font-semibold ${isDark ? 'bg-[#0a0a0c]/80 border-zinc-850 text-violet-400' : 'bg-purple-50/50 border-purple-100 text-purple-700'
+              }`}>
               ⚡ Flow is 8% higher than last Monday
             </div>
           </div>
         </section>
 
         {/* Upcoming Week Ledger */}
-        <section className={`p-6 rounded-2xl border shadow-sm ${
-          isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
-        }`}>
+        <section className={`p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-[#18181b] border-zinc-800' : 'bg-white border-slate-100'
+          }`}>
           <div className="flex justify-between items-center mb-5">
             <h4 className={`text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-800'}`}>
               <span className={`material-symbols-outlined text-[20px] ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>calendar_today</span>
@@ -477,19 +473,17 @@ export default function Reminders({ isDark }: RemindersProps) {
 
           <div className="space-y-3.5">
             {displayUpcoming.map((item: any, idx: number) => (
-              <div 
-                key={idx} 
-                className={`p-3 rounded-xl border flex items-center gap-3.5 transition-colors ${
-                  isDark ? 'bg-[#0a0a0c]/80 border-zinc-850' : 'bg-slate-50/50 border-slate-100 hover:bg-slate-100/50'
-                }`}
+              <div
+                key={idx}
+                className={`p-3 rounded-xl border flex items-center gap-3.5 transition-colors ${isDark ? 'bg-[#0a0a0c]/80 border-zinc-850' : 'bg-slate-50/50 border-slate-100 hover:bg-slate-100/50'
+                  }`}
               >
-                <div className={`w-10 py-1.5 rounded-lg flex flex-col items-center justify-center shrink-0 border ${
-                  isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-white border-slate-100 text-slate-500'
-                }`}>
+                <div className={`w-10 py-1.5 rounded-lg flex flex-col items-center justify-center shrink-0 border ${isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-white border-slate-100 text-slate-500'
+                  }`}>
                   <span className="text-[9px] font-bold uppercase leading-none">{item.date.split(' ')[0]}</span>
                   <span className="text-xs font-extrabold leading-none mt-1">{item.date.split(' ')[1]}</span>
                 </div>
-                
+
                 <div className="min-w-0">
                   <p className={`text-xs font-bold leading-normal truncate ${isDark ? 'text-white' : 'text-slate-850'}`}>
                     {item.title}

@@ -5,6 +5,7 @@ import path from "path";
 import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine.ts";
 import { getRecentEmails, getUpcomingEvents, verifyCoralSource, getCoralUserProfile } from "./services/coralService.ts";
 import { getEventsContext } from "./services/eventsProcessor.ts";
+import { getRemindersContext } from "./services/remindersProcessor.ts";
 import { getPreferences, updatePreference } from "./utils/preferences.ts";
 // --- New REST Endpoints for Demo Data ---
 // These endpoints load from the shared mockData file to preserve hackathon velocity and demo reliability
@@ -189,14 +190,21 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
-app.get("/api/reminders", (req, res) => {
-  res.json({
-    stats: remindersStatsList,
-    urgent: remindersUrgentList,
-    active: remindersActiveList,
-    upcoming: remindersUpcomingList,
-    aiInsights: remindersAiInsightsList,
-  });
+app.get("/api/reminders", async (req, res) => {
+  try {
+    const data = await getRemindersContext();
+    res.json(data);
+  } catch (error) {
+    console.error("Error processing reminders context", error);
+    res.json({
+      source: "fallback",
+      stats: remindersStatsList,
+      urgent: remindersUrgentList,
+      active: remindersActiveList,
+      upcoming: remindersUpcomingList,
+      aiInsights: remindersAiInsightsList,
+    });
+  }
 });
 
 app.get("/api/insights", (req, res) => {
