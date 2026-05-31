@@ -31,11 +31,49 @@ export default function Sidebar({ activePage, setActivePage, isDark }: SidebarPr
         }`}
     >
       {/* Brand Logo */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-purple-600">NeverLate</h1>
-        <p className={`text-xs font-medium mt-1 ${isDark ? "text-zinc-500" : "text-slate-500"}`}>
-          Your Personal Life Agent
-        </p>
+      <div className="mb-10">
+        <div className="flex items-center gap-3">
+          <div
+            className={`
+        relative flex h-11 w-11 items-center justify-center
+        rounded-xl
+        ${isDark
+                ? "bg-violet-600/15 border border-violet-500/20"
+                : "bg-violet-50 border border-violet-200"}
+      `}
+          >
+            <div className="absolute h-7 w-7 rounded-full border-2 border-violet-500" />
+
+            <div className="absolute top-1.5 right-1.5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60"></span>
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+              </span>
+            </div>
+
+            <div className="h-2 w-2 rounded-full bg-violet-500" />
+          </div>
+
+          <div>
+            <h1
+              className={`
+          text-2xl font-bold tracking-tight
+          ${isDark ? "text-white" : "text-slate-900"}
+        `}
+            >
+              NeverLate
+            </h1>
+
+            <p
+              className={`
+          text-xs font-medium
+          ${isDark ? "text-zinc-500" : "text-slate-500"}
+        `}
+            >
+              Never miss what matters
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Navigation Links */}

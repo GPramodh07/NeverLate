@@ -146,8 +146,7 @@ The Dashboard provides a unified view of risks, priorities, upcoming events, and
 Ask natural-language questions and receive contextual answers grounded in connected data sources.
 
 <div align="center">
-  <img src="./assets/chat-desktop.png" alt="NeverLate AI Chat Desktop" width="70%" />
-  <img src="./assets/chat-mobile.png" alt="NeverLate AI Chat Mobile" width="22%" />
+  <img src="./assets/chat-desktop.png" alt="NeverLate AI Chat" width="85%" />
 </div>
 
 ### Insights
