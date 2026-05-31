@@ -6,7 +6,7 @@ interface InsightsProps {
 }
 
 export default function Insights({ isDark }: InsightsProps) {
-  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/insights', {
+  const { data, loading } = useFetchWithFallback(`${import.meta.env.VITE_API_URL}/api/insights`, {
     source: 'fallback' as 'fallback' | 'live',
     velocity: insightsVelocity,
     counters: insightsCounters,

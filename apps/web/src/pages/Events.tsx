@@ -108,7 +108,7 @@ export default function Events({ isDark }: EventsProps) {
   const [smartDraft, setSmartDraft] = useState<Record<string, string>>({})
   const [showDraftModal, setShowDraftModal] = useState<string | null>(null)
   
-  const { data, loading } = useFetchWithFallback<EventPayload>('http://localhost:3000/api/events', {
+  const { data, loading } = useFetchWithFallback<EventPayload>(`${import.meta.env.VITE_API_URL}/api/events`, {
     stats: eventsStatsList,
     nextUp: eventsNextUpList as TimelineItem[],
     weekEvents: {},

@@ -24,7 +24,7 @@ export default function Header({ activePage, setActivePage, isDark, setIsDark }:
   useEffect(() => {
     async function fetchNotifs() {
       try {
-        const res = await fetch('http://localhost:3000/api/ai/notifications')
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai/notifications`)
         if (res.ok) {
           const data = await res.json()
           setNotifCount(data.length || 0)

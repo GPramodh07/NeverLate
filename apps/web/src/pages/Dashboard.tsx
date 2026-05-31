@@ -54,7 +54,7 @@ export default function Dashboard({ setActivePage, isDark }: DashboardProps) {
     },
   ];
 
-  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/ai/dashboard', {
+  const { data, loading } = useFetchWithFallback(`${import.meta.env.VITE_API_URL}/api/ai/dashboard`, {
     metrics: dashboardKpis,
     insights: dashboardInsights,
     timeline: dashboardAgenda,

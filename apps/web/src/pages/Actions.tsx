@@ -12,7 +12,7 @@ interface ActionsProps {
 }
 
 export default function Actions({ isDark }: ActionsProps) {
-  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/actions', {
+  const { data, loading } = useFetchWithFallback(`${import.meta.env.VITE_API_URL}/api/actions`, {
     source: 'fallback' as 'fallback' | 'live',
     stats: actionsStatsList,
     pending: actionsPendingList,

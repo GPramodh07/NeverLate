@@ -69,7 +69,7 @@ export default function AIChat({ isDark }: AIChatProps) {
     setIsTyping(true)
     try {
       const currentContext = updatedMessages.slice(-10);
-      const res = await fetch('http://localhost:3000/api/ai/chat', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: queryToUse, context: currentContext })

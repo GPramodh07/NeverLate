@@ -20,7 +20,7 @@ export default function Reminders({ isDark }: RemindersProps) {
   // Urgent overdue count state
   const [urgentVisible, setUrgentVisible] = useState(true)
 
-  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/reminders', {
+  const { data, loading } = useFetchWithFallback(`${import.meta.env.VITE_API_URL}/api/reminders`, {
     source: 'fallback' as 'fallback' | 'live',
     stats: remindersStatsList,
     urgent: remindersUrgentList,
