@@ -6,6 +6,7 @@
 
 ### *"Never miss what matters."*
 
+[![Coral Hackathon](https://img.shields.io/badge/WeMakeDevs-Coral_Hackathon-FF6B6B?style=for-the-badge)](https://withcoral.com/docs)
 [![Demo Ready](https://img.shields.io/badge/Demo-Ready-success?style=for-the-badge)]()
 [![Built with React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -87,7 +88,7 @@ The AI combines information from multiple sources and proactively surfaces:
 
 Instead of finding problems after they happen, Sarah resolves them before they become emergencies.
 
-## 🛑 The Problem
+## 🛑 What Problem Are We Solving?
 
 Modern life is fragmented across:
 - Gmail
@@ -100,24 +101,19 @@ Modern life is fragmented across:
 
 People spend far too much time manually tracking commitments, cross-referencing calendars against emails, and frequently missing important events because critical information is siloed in disconnected tools.
 
-## 💡 The Solution
+## 💡 What We Built
 
-NeverLate acts as a unified personal AI agent. By connecting directly to your fragmented data sources, it constantly analyzes your digital footprint to proactively surface:
+NeverLate is an AI-powered personal life agent that connects fragmented data sources and proactively identifies risks before they become problems.
 
-- Scheduling conflicts
-- Upcoming deadlines
-- Travel preparation needs
-- Forgotten commitments
-- Priority actions
-- Potential risks
+The system combines:
 
-You can interact with NeverLate using natural language:
-- *"What am I likely to miss this week?"*
-- *"Do I have any travel plans?"*
-- *"What needs my attention today?"*
-- *"What are my top priorities?"*
+- AI-powered natural language interaction
+- Deterministic risk analysis
+- MCP-based tool integrations
+- Unified dashboard experiences
+- Cross-source contextual reasoning
 
-The system securely queries your connected sources and instantly produces actionable insights.
+Instead of helping users search for information, NeverLate helps users discover what requires attention.
 
 ## ✨ Key Features
 
@@ -162,6 +158,43 @@ Analyze workload trends, productivity signals, and scheduling patterns.
 <div align="center">
   <img src="./assets/insights-desktop.png" alt="NeverLate Insights" width="85%" />
 </div>
+
+## 🪸 How We Used Coral
+
+NeverLate uses Coral as the foundation for connecting and querying external data sources.
+
+Coral enables our AI agent to securely access structured information from connected systems and transform that information into actionable insights.
+
+Within NeverLate, Coral is used to:
+
+- Connect external productivity data sources
+- Retrieve contextual information for AI reasoning
+- Support MCP tool execution
+- Provide structured access to user information
+- Power the AI agent's understanding of schedules, commitments, and notifications
+
+By combining Coral with MCP, NeverLate can reason across multiple sources rather than treating each application in isolation.
+
+## 🔗 Connected Data Sources
+
+NeverLate is designed around connected productivity ecosystems.
+
+Current integrations include:
+
+| Source | Purpose |
+|----------|----------|
+| Gmail | Travel confirmations, deadlines, notifications, reminders |
+| Google Calendar | Meetings, appointments, scheduling conflicts |
+| Coral Sources | Structured retrieval of contextual information |
+
+Future integrations:
+
+- Notion
+- Slack
+- Jira
+- Linear
+- Outlook
+- Google Tasks
 
 ## 🧠 AI Agent Architecture
 
@@ -321,7 +354,26 @@ NeverLate helps users understand relationships between emails, events, reminders
 - Model Context Protocol (MCP)
 - Custom Heuristic & LLM Engines
 
-## 🚀 Getting Started
+## 🚀 Demo, Repository & Setup
+
+### Live Demo
+
+[Launch NeverLate](YOUR_VERCEL_URL)
+
+### Demo Video
+
+[Watch Demo](YOUR_YOUTUBE_URL)
+
+### Repository
+
+https://github.com/YOUR_REPO
+
+### Quick Start
+
+```bash
+npm install
+npm run dev
+```
 
 ### Environment Variables
 Create a `.env` file in the root directory and configure the necessary parameters.
@@ -334,13 +386,19 @@ PORT=3000
 CORAL_BASE_URL=http://localhost:8080
 
 # Demo Mode Configuration
-# Bypasses Coral execution and returns mock data for testing
+# Bypasses Coral execution and returns mock data for testing (use false to enable real data)
 MOCK_MODE=true
 
 # Frontend Configuration
 VITE_API_URL=http://localhost:3000
+
+# Exposes the flag to the React frontend to display the "Demo Mode" UI badge. (use false to hide it)
 VITE_MOCK_MODE=true
 ```
+
+### Configuring Coral Sources
+
+See: `docs/coral-source-setup.md`
 
 ### Running Locally
 
@@ -394,12 +452,34 @@ Our team leveraged cutting-edge AI tools including **ChatGPT**, **Gemini**, and 
 
 **Transparency Note:** Humans made all final technical decisions, manually validated every implementation, and governed the system architecture. AI was used as a powerful accelerator, but it did not replace our core engineering judgment.
 
-## 🔮 Future Roadmap
+## 🔮 What's Next?
 
-- **Extended Data Sources:** Integrate Notion, Slack, Linear, and Jira.
-- **Agentic Actions:** Empower the AI not just to read data, but to perform explicit actions (e.g., automatically drafting email replies or rescheduling calendar events).
-- **Offline First Support:** Cache essential metadata securely using local SQLite databases.
-- **Proactive Push Notifications:** Integrate WebSockets for real-time risk alerts directly to mobile devices.
+### More Integrations
+
+- Notion
+- Slack
+- Linear
+- Jira
+- Outlook
+
+### Agentic Actions
+
+- Draft emails
+- Reschedule meetings
+- Create reminders
+- Trigger workflows
+
+### Smarter Predictions
+
+- Travel risk forecasting
+- Deadline risk scoring
+- Commitment overload detection
+
+### Real-Time Experiences
+
+- Push notifications
+- Mobile applications
+- Live synchronization
 
 ## 👥 Contributors
 
