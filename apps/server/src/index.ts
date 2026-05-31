@@ -33,7 +33,7 @@ dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // Allow all origins for dev to prevent port-hopping CORS issues
+app.use(cors({ origin: '*' })); // Allow all origins for dev to prevent port-hopping CORS issues
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
