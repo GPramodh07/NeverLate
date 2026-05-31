@@ -37,10 +37,10 @@
   <a href="https://neverlate-web.vercel.app">
     <img src="https://img.shields.io/badge/🚀_Live_Demo-Launch_App-8B5CF6?style=for-the-badge" alt="Live Demo"/>
   </a>
-  <!-- <a href="https://youtube.com/watch?v=#">
+  <a href="https://youtube.com/watch?v=67KmcqO2-70">
     <img src="https://img.shields.io/badge/🎥_Demo_Video-Watch_Pitch-FF0000?style=for-the-badge" alt="Demo Video"/>
   </a>
-  <a href="https://devpost.com/software/neverlate">
+  <!-- <a href="https://devpost.com/software/neverlate">
     <img src="https://img.shields.io/badge/🏆_Hackathon-Devpost_Submission-003E54?style=for-the-badge" alt="Devpost"/>
   </a> -->
 </p>
@@ -358,15 +358,15 @@ NeverLate helps users understand relationships between emails, events, reminders
 
 ### Live Demo
 
-[Launch NeverLate](YOUR_VERCEL_URL)
+[Launch NeverLate](https://neverlate-web.vercel.app)
 
 ### Demo Video
 
-[Watch Demo](YOUR_YOUTUBE_URL)
+[Watch Demo](https://youtu.be/67KmcqO2-70)
 
 ### Repository
 
-https://github.com/YOUR_REPO
+https://github.com/GPramodh07/NeverLate
 
 ### Quick Start
 
