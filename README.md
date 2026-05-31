@@ -14,8 +14,6 @@
 [![Powered by Coral](https://img.shields.io/badge/Powered_by-Coral_SQL-FF6B6B?style=for-the-badge)](https://coral.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](LICENSE)
 
-<br/>
-
 > Built for the **WeMakeDevs Coral Hackathon** 🚀
 
 </div>
@@ -30,13 +28,21 @@
 
 <br/>
 
-## 🎥 Demo Video
-
-[Watch the 3-minute demo](#)
-
 ## 📖 Overview
 
 **NeverLate** is an AI-powered personal life agent. We built it because modern life is heavily fragmented. Our schedules, communications, and commitments are scattered across disconnected applications. NeverLate functions as a secure, personal AI agent that continuously analyzes connected data sources to proactively surface what matters most.
+
+<p align="left">
+  <a href="https://neverlate-web.vercel.app">
+    <img src="https://img.shields.io/badge/🚀_Live_Demo-Launch_App-8B5CF6?style=for-the-badge" alt="Live Demo"/>
+  </a>
+  <!-- <a href="https://youtube.com/watch?v=#">
+    <img src="https://img.shields.io/badge/🎥_Demo_Video-Watch_Pitch-FF0000?style=for-the-badge" alt="Demo Video"/>
+  </a>
+  <a href="https://devpost.com/software/neverlate">
+    <img src="https://img.shields.io/badge/🏆_Hackathon-Devpost_Submission-003E54?style=for-the-badge" alt="Devpost"/>
+  </a> -->
+</p>
 
 ## 🎯 The NeverLate Moment
 
@@ -428,6 +434,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Built with ❤️ for the WeMakeDevs Coral Hackathon**
+*Built with ❤️ for the **WeMakeDevs Coral Hackathon***
+
+**Connect your digital life. Detect conflicts before they happen. Never miss what matters.**
 
 </div>
