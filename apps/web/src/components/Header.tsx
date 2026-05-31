@@ -86,6 +86,18 @@ export default function Header({ activePage, setActivePage, isDark, setIsDark }:
           <span className="text-xs font-semibold">AI Agent Monitoring</span>
         </div>
 
+        {/* Demo Mode Badge */}
+        {import.meta.env.VITE_MOCK_MODE === 'true' && (
+          <div className={`hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
+            isDark 
+              ? 'bg-amber-950/30 border-amber-800/30 text-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.1)]' 
+              : 'bg-amber-50 border-amber-200 text-amber-700 shadow-sm shadow-amber-500/10'
+          }`} title="Running on local fallback mock data. Login not required.">
+            <span className="material-symbols-outlined text-[14px]">science</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Demo Mode: Sandbox Data</span>
+          </div>
+        )}
+
         {/* Global Light/Dark Theme Switcher Toggle */}
         <button 
           onClick={() => setIsDark(!isDark)}
