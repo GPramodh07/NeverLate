@@ -5,6 +5,9 @@ import path from "path";
 import { processDashboardData, processChat, getActiveNotifications } from "./ai/aiEngine.ts";
 import { getRecentEmails, getUpcomingEvents, verifyCoralSource, getCoralUserProfile } from "./services/coralService.ts";
 import { getEventsContext } from "./services/eventsProcessor.ts";
+import { getRemindersContext } from "./services/remindersProcessor.ts";
+import { getActionsContext } from "./services/actionsProcessor.ts";
+import { getInsightsContext } from "./services/insightsProcessor.ts";
 import { getPreferences, updatePreference } from "./utils/preferences.ts";
 // --- New REST Endpoints for Demo Data ---
 // These endpoints load from the shared mockData file to preserve hackathon velocity and demo reliability
@@ -30,7 +33,7 @@ dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // Allow all origins for dev to prevent port-hopping CORS issues
+app.use(cors({ origin: '*' })); // Allow all origins for dev to prevent port-hopping CORS issues
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
@@ -114,11 +117,11 @@ app.post("/api/sources/connect", async (req, res) => {
 
     const profile = await getCoralUserProfile();
 
-    res.json({ 
-      success: true, 
-      connected: true, 
-      enabled: true, 
-      email: profile?.email || undefined, 
+    res.json({
+      success: true,
+      connected: true,
+      enabled: true,
+      email: profile?.email || undefined,
       name: profile?.name || undefined,
       avatarUrl: profile?.avatarUrl || undefined
     });
@@ -156,9 +159,13 @@ app.get("/api/ai/dashboard", async (req, res) => {
 
 app.post("/api/ai/chat", async (req, res) => {
   try {
-    const { query } = req.body;
-    const reply = await processChat(query);
-    res.json({ reply });
+    const { query, context } = req.body;
+    if (typeof query !== 'string' || !query.trim()) {
+      return res.status(400).json({ error: "Query is required and must be a string." });
+    }
+    // Pass the query and context array to the AI engine
+    const response = await processChat(query, context);
+    res.json(response);
   } catch (error) {
     console.error("Error in AI chat", error);
     res.status(500).json({ error: "Failed to process chat" });
@@ -189,31 +196,54 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
-app.get("/api/reminders", (req, res) => {
-  res.json({
-    stats: remindersStatsList,
-    urgent: remindersUrgentList,
-    active: remindersActiveList,
-    upcoming: remindersUpcomingList,
-    aiInsights: remindersAiInsightsList,
-  });
+app.get("/api/reminders", async (req, res) => {
+  try {
+    const data = await getRemindersContext();
+    res.json(data);
+  } catch (error) {
+    console.error("Error processing reminders context", error);
+    res.json({
+      source: "fallback",
+      stats: remindersStatsList,
+      urgent: remindersUrgentList,
+      active: remindersActiveList,
+      upcoming: remindersUpcomingList,
+      aiInsights: remindersAiInsightsList,
+    });
+  }
 });
 
-app.get("/api/insights", (req, res) => {
-  res.json({
-    velocity: insightsVelocity,
-    counters: insightsCounters,
-    risks: insightsRisks,
-    suggestions: insightsSuggestions,
-  });
+app.get("/api/insights", async (req, res) => {
+  try {
+    const data = await getInsightsContext();
+    res.json(data);
+  } catch (error) {
+    console.error("Error processing insights context", error);
+    res.json({
+      source: "fallback",
+      generatedAt: new Date().toISOString(),
+      velocity: insightsVelocity,
+      counters: insightsCounters,
+      risks: insightsRisks,
+      suggestions: insightsSuggestions,
+    });
+  }
 });
 
-app.get("/api/actions", (req, res) => {
-  res.json({
-    stats: actionsStatsList,
-    pending: actionsPendingList,
-    weeklyChart: actionsWeeklyChart,
-  });
+app.get("/api/actions", async (req, res) => {
+  try {
+    const data = await getActionsContext();
+    res.json(data);
+  } catch (error) {
+    console.error("Error processing actions context", error);
+    res.json({
+      source: "fallback",
+      generatedAt: new Date().toISOString(),
+      stats: actionsStatsList,
+      pending: actionsPendingList,
+      weeklyChart: actionsWeeklyChart,
+    });
+  }
 });
 
 app.listen(port, () => {

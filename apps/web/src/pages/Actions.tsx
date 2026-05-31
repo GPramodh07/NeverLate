@@ -12,7 +12,8 @@ interface ActionsProps {
 }
 
 export default function Actions({ isDark }: ActionsProps) {
-  const { data, loading } = useFetchWithFallback('http://localhost:3000/api/actions', {
+  const { data, loading } = useFetchWithFallback(`${import.meta.env.VITE_API_URL}/api/actions`, {
+    source: 'fallback' as 'fallback' | 'live',
     stats: actionsStatsList,
     pending: actionsPendingList,
     weeklyChart: actionsWeeklyChart,
@@ -21,6 +22,7 @@ export default function Actions({ isDark }: ActionsProps) {
   const displayStats = data?.stats || actionsStatsList;
   const displayPending = data?.pending || actionsPendingList;
   const displayWeeklyChart = data?.weeklyChart || actionsWeeklyChart;
+  const source = data?.source || 'fallback';
 
   // Interactive list of active actions
   const [actionsList, setActionsList] = useState<ActionsPendingItem[]>(displayPending)
@@ -93,12 +95,22 @@ export default function Actions({ isDark }: ActionsProps) {
             Autonomous scheduling updates, email draft compilations, and flow optimizations awaiting your final clearance.
           </p>
         </div>
-        <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl ${isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
-          }`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>
-            System Health: Optimal
-          </span>
+        <div className="flex items-center gap-3">
+          {source && (
+            <div className={`border shadow-sm flex items-center gap-2 px-3 py-1.5 rounded-xl ${isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'}`}>
+              <span className={`w-2 h-2 rounded-full ${source === 'live' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                {source === 'live' ? 'Connected' : 'Demo Mode'}
+              </span>
+            </div>
+          )}
+          <div className={`border shadow-sm flex items-center gap-2 px-4 py-2 rounded-2xl ${isDark ? 'bg-[#18181b] border-zinc-850' : 'bg-white border-slate-100'
+            }`}>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className={`text-xs font-bold ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>
+              System Health: Optimal
+            </span>
+          </div>
         </div>
       </header>
 

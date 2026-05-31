@@ -15,7 +15,7 @@ export function SourcesProvider({ children }: { children: React.ReactNode }) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/sources/status')
+    fetch(`${import.meta.env.VITE_API_URL}/api/sources/status`)
       .then(res => res.json())
       .then(data => {
         setSources(prev => prev.map(src => {
@@ -48,7 +48,7 @@ export function SourcesProvider({ children }: { children: React.ReactNode }) {
       try {
         if (isCurrentlyActive) {
           // Disable it
-          const res = await fetch('http://localhost:3000/api/sources/disable', {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/sources/disable`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sourceId: id })
@@ -63,7 +63,7 @@ export function SourcesProvider({ children }: { children: React.ReactNode }) {
           ))
         } else {
           // Connect it
-          const res = await fetch('http://localhost:3000/api/sources/connect', {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/sources/connect`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sourceId: id })

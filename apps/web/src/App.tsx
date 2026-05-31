@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
@@ -12,8 +12,15 @@ import Actions from "./pages/Actions.tsx";
 import { SourcesProvider } from "./context/SourcesContext";
 
 export default function App() {
-  const [activePage, setActivePage] = useState("dashboard");
+  const [activePage, setActivePage] = useState(() => {
+    const saved = localStorage.getItem("neverlate-current-page");
+    return saved ? saved : "dashboard";
+  });
   const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("neverlate-current-page", activePage);
+  }, [activePage]);
 
   const renderPage = () => {
     switch (activePage) {
