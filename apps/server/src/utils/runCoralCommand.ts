@@ -4,6 +4,8 @@ import os from "os";
 
 const execAsync = promisify(exec);
 
+let cachedWslUser: string | null = null;
+
 export async function runCoralCommand<T>(query: string): Promise<T> {
   // If MOCK_MODE is true, immediately throw an error to force fallback to mock data
   if (process.env.MOCK_MODE === "true") {
@@ -12,7 +14,20 @@ export async function runCoralCommand<T>(query: string): Promise<T> {
 
   const isWindows = process.platform === "win32";
   const distro = process.env.WSL_DISTRO || "Ubuntu";
-  const user = process.env.WSL_USER || "alex";
+  let user = process.env.WSL_USER || cachedWslUser;
+
+  if (isWindows && !user) {
+    try {
+      const { stdout } = await execAsync(`wsl -d ${distro} whoami`);
+      user = stdout.trim();
+      cachedWslUser = user;
+    } catch (e) {
+      user = "alex";
+      cachedWslUser = "alex";
+    }
+  } else if (!user) {
+    user = "alex";
+  }
 
   const defaultCoralBin = isWindows
     ? `/home/${user}/.local/bin/coral`
